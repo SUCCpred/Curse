@@ -56,16 +56,16 @@ char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] = {
 	"$$$$$$$$$$$  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  $$$$$$$$$$$$",
-	"             Начальное создание таблицы               ",
-	"                  Просмотр таблицы                    ",
-	"          Добавление новой записи в таблицу           ",
-	"                  Удаление записи                     ",
-	"            Корректировка записи в таблице            ",
-	"                Сотрировка таблицы                    ",
-	"              Поиск записи в таблице                  ",
-	"        Экспорт данных в текстовый файл               ", //Приказ
-	"  Обработка таблицы и просмотр результатов обработки  ",
-	"                       Выход                        "
+	"             Начальное создание таблицы               ",//1
+	"                  Просмотр таблицы                    ",//2
+	"          Добавление новой записи в таблицу           ",//3
+	"                  Удаление записи                     ",//4
+	"            Корректировка записи в таблице            ",//5
+	"                Сотрировка таблицы                    ",//6
+	"              Поиск записи в таблице                  ",//7
+	"        Экспорт данных в текстовый файл               ",//Приказ
+	"  Обработка таблицы и просмотр результатов обработки  ",//9
+	"                       Выход                          " //10
 };
 
 struct AutoBase
@@ -100,6 +100,7 @@ void DeleteElement(struct node* _node);
 void DeleteInterface();
 
 void CorrectElement(struct node* temp);
+void CorrElInterface();
 void CreateElement();//добавление элемента
 
 void setColor(ConsoleColor text, ConsoleColor background) 
@@ -127,7 +128,7 @@ int main() {
 			break;
 		case 4: DeleteInterface();
 			break;
-		case 5: 
+		case 5: CorrElInterface();
 			break;
 		case 6: SortList();
 			break;
@@ -188,14 +189,60 @@ void DrawAffirmationItems(int Item)
 	}
 }
 
+void CorrectElement(struct node* temp)
+{
+	system("cls");
+	printf("Редактирование элемента:\n");
 
+	struct AutoBase* temp1 = new AutoBase;
 
+	printf("\nИзменить номер автобазы %d на:\n", temp->info.ABnomber);
+	char a[999];
+	memset(a, 0, 999);
+	while (getchar() != '\n' && !feof(stdin));
+	gets_s(a);
+	temp->info.ABnomber = atoi(a);
 
-AutoBase* CorrectEl(AutoBase* beg) {
-	AutoBase* temp;
-	if (!beg) { cout << "Очередь пустая" << endl; return 0; }
-	cout << "─────────────────────────────" << endl;
-}
+	printf("\nИзменить имя директора \"%s\" на:", temp->info.Director);
+	gets_s(a);
+	strcpy_s(temp->info.Director, a);
+
+	printf("\nИзменить затраты на топливо с %f на:", temp->info.FuelPOTRACHENO);
+	gets_s(a);
+	temp->info.FuelPOTRACHENO = atof(a);
+
+	printf("\nИзменить количетсво автомобилей с %d на:", temp->info.CarCount);
+	gets_s(a);
+	temp->info.CarCount = atoi(a);
+
+	printf("Элемент был отредактирован");
+
+};
+
+void CorrElInterface()
+{
+	int n;
+	system("cls");
+	cout << "Ведите номер автобазы, информацию о которой хотите отредактировать: ";
+	cin >> n;
+	node* temp = beg;
+	while (temp != back)
+	{
+		if (temp->info.ABnomber == n)
+			break;
+		temp = temp->next;
+
+	}
+	if (temp->info.ABnomber != n)
+	{
+		cout << "Нет такой автобазы...";
+		cin.get();
+		return;
+	}
+	CorrectElement(temp);
+	system("pause");
+	return;
+};
 
 /*void Average1(node* beg) {
 	float a;
