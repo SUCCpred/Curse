@@ -18,7 +18,8 @@ using namespace std;
 
 /************************** Макросы *******************************************/
 
-#define MAXMENUITEM 11 //Максимальное количество элементов
+const int MAXMENUITEM = 11; //Максимальное количество элементов на главном меню
+const int MAXMENUCHOISEITEM = 4;//Максимальное количество элементов на меню выбора
 #define EnterKeyCode 13 //Код клавиши ввода (по умолчанию 13 - Enter)
 #define EscapeKeyCode 27 //Код клавиши отмены (по умолчанию 27 - Escape)
 #define UpKeyCode 72 //Код клавиши перехода наверх (по умолчанию 72 - стрелка вверх)
@@ -56,7 +57,8 @@ enum ConsoleColor
 char ImportFileName[255]; //Имя файла импорта записей
 char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
-const char* items[] = {
+const char* items[] = 
+{
 	"$$$$$$$$$$$  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  $$$$$$$$$$$$",
 	"             Начальное создание таблицы               ",//1
 	"                  Просмотр таблицы                    ",//2
@@ -68,6 +70,13 @@ const char* items[] = {
 	"        Экспорт данных в текстовый файл               ",//Приказ
 	"  Обработка таблицы и просмотр результатов обработки  ",//9
 	"                       Выход                          " //10
+};
+const char* choiseOFaverageITEMS[] =
+{
+	"$$$$$$$$$$$$$$$$$$$$$$$   Выберите пункт   $$$$$$$$$$$$$$$$$$$$$$$$",
+	"  Подсчитать средний расход топлива на одну машину по каждой базе  ",
+	"          Подсчитать средний расход топлива по городу              ",
+	"                                ой                                 "
 };
 
 struct AutoBase
@@ -88,7 +97,7 @@ struct node
 
 /********************* Прототипы функций ***********************************/
 int Menu(); //меню
-void PrintMenu(int item); //Отрисовка пунктов меню
+void PrintMenu(int item, const char **itemshow, const int maxel); //Отрисовка пунктов меню
 
 void FirstEl(); //Импорт таблицы из текстового файла
 void ExportTable(); //Экспорт таблицы в текстовый файл
@@ -106,6 +115,8 @@ void CorrElInterface();
 void CreateElement();//добавление элемента
 
 void Average1(node* beg); //средний расход топлива на одну машину по каждой базе
+void AverageInCityHeroSevastopol(node* beg); //средний расход топлева по городу ГЕРОЮ Севастополю
+void AverageChoise();//у каждого есть выбор
 
 void setColor(ConsoleColor text, ConsoleColor background) 
 {
@@ -140,7 +151,7 @@ int main() {
 			break;
 		case 8: ExportTable();
 			break;
-		case 9: Average1(beg);
+		case 9: AverageChoise();
 			break;
 		case 10:
 			return 0;
@@ -262,6 +273,58 @@ void Average1(node* beg)
 	system("pause");
 }
 
+void AverageInCityHeroSevastopol(node* beg)
+{
+	system("cls");
+	float a = 0,
+		  b = 0,
+		  c = 0;
+	while (beg != 0)
+	{
+		a = a + beg->info.FuelPOTRACHENO;
+		b = b + beg->info.CarCount;
+		beg = beg->next;
+	}
+	c = a / b;
+	printf("Средний расход топлива городу равен %f\n", c);
+	system("pause");
+}
+int ChoiseMenu()
+{
+	int MenuItem = 1;
+	PrintMenu(MenuItem, choiseOFaverageITEMS, MAXMENUCHOISEITEM);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, choiseOFaverageITEMS, MAXMENUCHOISEITEM);
+	};
+	return 0;
+}
+
+void AverageChoise()
+{
+	system("cls");
+	
+	while (1)
+	{
+		switch (ChoiseMenu())
+		{
+		case 1: Average1(beg);
+			break;
+		case 2: AverageInCityHeroSevastopol(beg);
+			break;
+		case 3:
+			return;
+		default:
+			break;
+		}
+	}
+	return;
+}
+
 void Print(const node& t) 
 {
 	printf_s("Номер автобазы: %d\n", t.info.ABnomber);
@@ -292,28 +355,28 @@ void sEl(node* beg)
 	system("pause");
 }
 
-void PrintMenu(int item)
+void PrintMenu(int item, const char **itemshow, const int maxel)
 {
 	system("cls");
 	int i = 1;
-	cout << items[0] << endl;
+	cout << itemshow[0] << endl;
 	for (; i < item; i++)
-		cout << "  " << items[i] << endl;
-	cout << "-$>" << items[i++] << "<$-\n";
-	for (; i < MAXMENUITEM; i++)
-		cout << "  " << items[i] << endl;
+		cout << "  " << itemshow[i] << endl;
+	cout << "-$>" << itemshow[i++] << "<$-\n";
+	for (; i < maxel; i++)
+		cout << "  " << itemshow[i] << endl;
 };
 
 int Menu() {
 	int MenuItem = 1;
-	PrintMenu(MenuItem);
+	PrintMenu(MenuItem, items, MAXMENUITEM);
 	char c;
 	while (c = _getch()) 
 	{
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUITEM-1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
-		PrintMenu(MenuItem);
+		PrintMenu(MenuItem, items, MAXMENUITEM);
 	};
 	return 0;
 }
