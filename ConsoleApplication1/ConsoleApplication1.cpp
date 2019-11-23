@@ -35,7 +35,7 @@ char ImportFileName[255]; //Имя файла импорта записей
 char* ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] = {
-	"₽₽₽₽₽₽₽₽₽₽₽  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ₽₽₽₽₽₽₽₽₽₽₽₽",
+	"$$$$$$$$$$$  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  $$$$$$$$$$$$",
 	"             Начальное создание таблицы               ",
 	"                  Просмотр таблицы                    ",
 	"          Добавление новой записи в таблицу           ",
@@ -98,13 +98,16 @@ int main() {
 			break;
 		case 4: DeleteInterface();
 			break;
-		case 5: break;
+		case 5: 
+			break;
 		case 6: qsortRecursive(beg, NodesCount);
 			break;
 		case 7:
+			break;
 		case 8:
 			break;
 		case 9:
+			break;
 		case 10:
 			return 0;
 		default:
@@ -146,13 +149,13 @@ void DrawAffirmationItems(int Item)
 {
 	if (Item == 1)
 	{
-		printf("Нет", 20);
+		printf("Нет");
 		printf("Да\n");
 	}
 	else if (Item == 2)
 	{
 		printf("Нет\n");
-		printf("Да", 20);
+		printf("Да");
 	}
 }
 
@@ -439,7 +442,7 @@ void CreateElement()
 	printf("Добавление нового элемента:\n");
 
 	struct node* temp = (struct node*)malloc(sizeof(struct node));
-	temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
+	//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 	back->next = temp;
 	temp->prev = back;
@@ -449,6 +452,7 @@ void CreateElement()
 	printf("\nВведите номер автобазы:");
 	char a[999];
 	memset(a, 0, 999);
+	while (getchar() != '\n' && !feof(stdin));
 	gets_s(a);
 	temp->info.ABnomber = atoi(a);
 
@@ -457,7 +461,6 @@ void CreateElement()
 	strcpy_s(temp->info.Director, a);
 
 	printf("\nТоплива потрачено:");
-	SetConsoleCP(1251);
 	gets_s(a);
 	temp->info.FuelPOTRACHENO = atof(a);
 
@@ -527,3 +530,4 @@ void ExportTable()
 //Вариант 3
 //Даны сведения о расходовании на автобазах города топлива по следующему макету: номер автобазы, Ф.И.О. директора (15 символов), 
 //израсходовано топлива (в условных единицах), количество автомашин на базе. Подсчитать средний расход топлива на одну машину по каждой базе и в целом по городу.
+//niniram
