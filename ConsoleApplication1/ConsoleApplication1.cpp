@@ -132,7 +132,7 @@ int main() {
 			break;
 		case 6: SortList();
 			break;
-		case 7: 
+		case 7: sEl(beg);
 			break;
 		case 8: ExportTable();
 			break;
@@ -252,22 +252,34 @@ void CorrElInterface()
 	}
 }*/
 
-void Print(const node& t) {
+void Print(const node& t) 
+{
 	printf_s("Номер автобазы: %d\n", t.info.ABnomber);
 	cout << "Имя директора: " <<  t.info.Director << endl;
 	printf_s("Израсходовано топлива: %f\n", t.info.FuelPOTRACHENO);
 	printf_s("Количество автомобилей : %d\n", t.info.CarCount);
 }
 
-void sEl(node* beg) {
+void sEl(node* beg) 
+{
 	int n;
+	system("cls");
 	cout << "Введите нормер нужной автобазы:\n";
 	cin >> n;
-	while (beg->next != 0) {
-		if (n == beg->info.ABnomber) {
+	while (beg->next != 0) 
+	{
+		if (n == beg->info.ABnomber) 
+		{
 			Print(*beg);
+			break;
 		}
+		beg = beg->next;
 	}
+	if (beg->info.ABnomber != n)
+	{
+		cout << "Нет автобазы с номером " << n << endl;
+	}
+	system("pause");
 }
 
 void PrintMenu(int item)
