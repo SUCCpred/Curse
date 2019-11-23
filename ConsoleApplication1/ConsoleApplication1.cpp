@@ -1,4 +1,6 @@
-﻿/************************** Библиотеки *****************************************/
+﻿//CopyRight by Igor Kisin ВСЕ ПРАВА ЗАЩИЩЕНЫ СЛАВА ПИЛОТАМ ЕВАНГЕЛИОНОВ
+
+/************************** Библиотеки *****************************************/
 #include <Windows.h>
 #include <conio.h>
 #include <stdio.h>
@@ -103,6 +105,8 @@ void CorrectElement(struct node* temp);
 void CorrElInterface();
 void CreateElement();//добавление элемента
 
+void Average1(node* beg); //средний расход топлива на одну машину по каждой базе
+
 void setColor(ConsoleColor text, ConsoleColor background) 
 {
 	SetConsoleTextAttribute(hConsole, (background << 4) | text);
@@ -136,7 +140,7 @@ int main() {
 			break;
 		case 8: ExportTable();
 			break;
-		case 9:
+		case 9: Average1(beg);
 			break;
 		case 10:
 			return 0;
@@ -244,13 +248,19 @@ void CorrElInterface()
 	return;
 };
 
-/*void Average1(node* beg) {
+void Average1(node* beg) 
+{
+	system("cls");
 	float a;
-	while (beg->next != 0) {
-		a = (beg->FuelPOTRACHENO) / (beg->CarCount);
-		cout << "Средний расход топлива на машину по базе " << beg->ABnomber << a;
+	while (beg != 0) 
+	{
+		a = (beg->info.FuelPOTRACHENO) / (beg->info.CarCount);
+		cout << endl;
+		printf ("Средний расход топлива на машину по базе %d равен %f\n", beg->info.ABnomber, a);
+		beg = beg->next;
 	}
-}*/
+	system("pause");
+}
 
 void Print(const node& t) 
 {
@@ -607,6 +617,5 @@ void ExportTable()
 }
 
 //Вариант 3
-//Даны сведения о расходовании на автобазах города топлива по следующему макету: номер автобазы, Ф.И.О. директора (15 символов), 
+//Даны сведения о расходовании на автобазах города ГЕРОЯ Севастополя топлива по следующему макету: номер автобазы, Ф.И.О. директора (15 символов), 
 //израсходовано топлива (в условных единицах), количество автомашин на базе. Подсчитать средний расход топлива на одну машину по каждой базе и в целом по городу.
-//niniram
