@@ -28,11 +28,31 @@ using namespace std;
 
 /*********************** Глобальные переменные ****************************/
 
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 struct node* beg, * back; //Указатели на начало и конец списка
 int NodesCount = 0; //Количество нод в списке
+enum ConsoleColor 
+{
+	Black = 0,
+	Blue = 1,
+	Green = 2,
+	Cyan = 3,
+	Red = 4,
+	Magenta = 5,
+	Brown = 6,
+	LightGray = 7,
+	DarkGray = 8,
+	LightBlue = 9,
+	LightGreen = 10,
+	LightCyan = 11,
+	LightRed = 12,
+	LightMagenta = 13,
+	Yellow = 14,
+	White = 15
+};
 
 char ImportFileName[255]; //Имя файла импорта записей
-char* ExportFileName[255]; //Имя файла экспорта записей
+char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] = {
 	"$$$$$$$$$$$  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  $$$$$$$$$$$$",
@@ -43,7 +63,7 @@ const char* items[] = {
 	"            Корректировка записи в таблице            ",
 	"                Сотрировка таблицы                    ",
 	"              Поиск записи в таблице                  ",
-	"        Экспорт данных в текстовый файл               ",
+	"        Экспорт данных в текстовый файл               ", //Приказ
 	"  Обработка таблицы и просмотр результатов обработки  ",
 	"                       Выход                        "
 };
@@ -72,7 +92,7 @@ void FirstEl(); //Импорт таблицы из текстового файл
 void ExportTable(); //Экспорт таблицы в текстовый файл
 
 void sEl(node* beg); //Поиск записи по ключу
-void qsortRecursive(node* mas, int size); //Сортировка
+void SortList(); //Сортировка
 
 void Prosmotr(node* beg); //Печать таблицы на экран
 void Delete(); //Удаление таблицы (освобождение памяти)
@@ -82,10 +102,19 @@ void DeleteInterface();
 void CorrectElement(struct node* temp);
 void CreateElement();//добавление элемента
 
+void setColor(ConsoleColor text, ConsoleColor background) 
+{
+	SetConsoleTextAttribute(hConsole, (background << 4) | text);
+}
 
+void setPos(COORD& c) 
+{
+	SetConsoleCursorPosition(hConsole, c);
+}
 
 int main() {
 	setlocale(LC_ALL, "Russian");
+	setColor(Yellow, Red);
 	while (1)
 	{
 		switch (Menu())
@@ -100,11 +129,11 @@ int main() {
 			break;
 		case 5: 
 			break;
-		case 6: qsortRecursive(beg, NodesCount);
+		case 6: SortList();
 			break;
-		case 7:
+		case 7: 
 			break;
-		case 8:
+		case 8: ExportTable();
 			break;
 		case 9:
 			break;
@@ -193,21 +222,6 @@ void sEl(node* beg) {
 		}
 	}
 }
-/*AutoBase* DataEnter() {
-	AutoBase* t = new AutoBase;
-	cin.clear();
-	cout << "Номер автобазы: " << endl;
-	cin >> t->ABnomber;
-	cout << "Имя директора: " << endl;
-	cin.getline(t->Director, 15);
-	cout << "Израсходовано топлива: " << endl;
-	cin >> t->FuelPOTRACHENO;
-	cout << "Количество автомобилей: " << endl;
-	cin >> t->CarCount;
-	return t;
-}*/
-
-
 
 void PrintMenu(int item)
 {
@@ -362,6 +376,7 @@ void FirstEl() {
 	fscanf_s(in, "%d", &NodesCount);
 
 	beg = (struct node*)malloc(sizeof(struct node));
+	beg->prev = NULL;
 	//beg->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 	fscanf_s(in, "%d", &beg->info.ABnomber);
@@ -385,6 +400,7 @@ void FirstEl() {
 		fscanf_s(in, "%d", &temp_node->info.CarCount);
 	}
 	back = temp_node;
+	back->next = NULL;
 
 	printf("Загружено записей:"); printf("%d\n", RecordCount);
 
@@ -409,32 +425,54 @@ void Prosmotr(node* beg) {
 	return;
 }
 
-void qsortRecursive(node* mas, int size) {
-	int i = 0;
-	int j = size - 1;
-	node mid = mas[size / 2];
-	do {
-		while (mas[i].info.ABnomber < mid.info.ABnomber) {
-			i++;
+void SortList()
+{
+	for (int i = 0; i < NodesCount - 1; i++)
+	{
+		struct node* temp = back;
+		for (int j = (NodesCount - 1); j > i; j--) // для всех элементов после i-ого
+		{
+			if (temp->prev->info.ABnomber > temp->info.ABnomber)
+			{
+				if (temp == back)
+				{
+					struct node* tempprev = temp->prev;
+					tempprev->prev->next = temp;
+					temp->prev = tempprev->prev;
+					temp->next = tempprev;
+					tempprev->prev = temp;
+					tempprev->next = NULL;
+					back = tempprev;
+					temp = tempprev;
+				}
+				else if (temp == beg->next)
+				{
+					struct node* tempnext = temp->next;
+					beg->next = tempnext;
+					beg->prev = temp;
+					tempnext->prev = beg;
+					temp->prev = NULL;
+					temp->next = beg;
+					beg = temp;
+					temp = beg->next;
+				}
+				else
+				{
+					struct node* tempprev = temp->prev;
+					temp->next->prev = tempprev;
+					tempprev->prev->next = temp;
+					temp->prev = tempprev->prev;
+					tempprev->next = temp->next;
+					temp->next = tempprev;
+					tempprev->prev = temp;
+					temp = tempprev;
+				}
+			}
+			temp = temp->prev;
 		}
-		while (mas[j].info.ABnomber > mid.info.ABnomber) {
-			j--;
-		}
-		if (i <= j) {
-			node tmp = mas[i];
-			mas[i] = mas[j];
-			mas[j] = tmp;
-			i++;
-			j--;
-		}
-	} while (i <= j);
-	if (j > 0) {
-		qsortRecursive(mas, j + 1);
-	}
-	if (i < size) {
-		qsortRecursive(&mas[i], size - i);
 	}
 }
+
 
 void CreateElement()
 {
@@ -482,10 +520,10 @@ void ExportTable()
 		return;
 	}
 	printf("Для экспорта данных в файл введите путь для экспорта:\n");
-	cin >> *ExportFileName;
+	cin >> ExportFileName;
 	errno_t err;
 	FILE* out;
-	err = fopen_s(&out, *ExportFileName, "w");
+	err = fopen_s(&out, ExportFileName, "w");
 	if (err != 0)
 	{
 		printf("Не удалось открыть файл для экспорта или неверно задан путь!");
@@ -496,37 +534,19 @@ void ExportTable()
 	{
 		struct node* temp = beg;
 		int RecordCount = 0;
-		fprintf_s(out, "Количество записей: %d\n", NodesCount);
+		fprintf_s(out, "%d\n", NodesCount);
 		while (RecordCount < NodesCount)
 		{
-			fprintf_s(out, "%d .%s. %f %d\n", temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+			fprintf_s(out, "%d\n.%s.\n%f\n%d\n", temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
 			temp = temp->next;
 			RecordCount++;
 		}
 	}
+	fclose(out);
 	system("pause");
 	return;
 }
 
-// ----------------------------запись в файл ----------------------------
-/*void Write_file(char* filename, node* temp)
-{
-	ofstream fout(filename);
-	if (!fout) { cout << "Не могу открыть файл для записи" << endl; return; }
-	while (temp)
-	{
-		fout << temp->info.ABnomber << endl;
-		fout << temp->info.Director << endl;
-		fout << temp->info.FuelPOTRACHENO << endl;
-		fout << temp->info.CarCount << endl;
-		temp = temp->next;
-	}
-	cout << "Данные сохранены в файле: " << filename << endl;
-	cout << "==============================" << endl;
-	cout << "Нажмите любую клавишу" << endl;
-	cin.get();
-	return;
-}*/
 //Вариант 3
 //Даны сведения о расходовании на автобазах города топлива по следующему макету: номер автобазы, Ф.И.О. директора (15 символов), 
 //израсходовано топлива (в условных единицах), количество автомашин на базе. Подсчитать средний расход топлива на одну машину по каждой базе и в целом по городу.
