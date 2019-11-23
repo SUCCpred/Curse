@@ -196,22 +196,22 @@ void CorrectElement(struct node* temp)
 
 	struct AutoBase* temp1 = new AutoBase;
 
-	printf("\nИзменить номер автобазы %d на:\n", temp->info.ABnomber);
+	printf("\nИзменить номер автобазы %d на: ", temp->info.ABnomber);
 	char a[999];
 	memset(a, 0, 999);
 	while (getchar() != '\n' && !feof(stdin));
 	gets_s(a);
 	temp->info.ABnomber = atoi(a);
 
-	printf("\nИзменить имя директора \"%s\" на:", temp->info.Director);
+	printf("\nИзменить имя директора \"%s\" на: ", temp->info.Director);
 	gets_s(a);
 	strcpy_s(temp->info.Director, a);
 
-	printf("\nИзменить затраты на топливо с %f на:", temp->info.FuelPOTRACHENO);
+	printf("\nИзменить затраты на топливо с %f на: ", temp->info.FuelPOTRACHENO);
 	gets_s(a);
 	temp->info.FuelPOTRACHENO = atof(a);
 
-	printf("\nИзменить количетсво автомобилей с %d на:", temp->info.CarCount);
+	printf("\nИзменить количетсво автомобилей с %d на: ", temp->info.CarCount);
 	gets_s(a);
 	temp->info.CarCount = atoi(a);
 
