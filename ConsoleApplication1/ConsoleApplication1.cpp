@@ -732,7 +732,7 @@ void SortList()
 void CreateElement()
 {
 	system("cls");
-	printf("Добавление нового элемента:\n");
+	printf("____Добавление нового элемента____\n");
 	if (beg != NULL || back != NULL)
 	{
 		struct node* temp = new node;
@@ -743,10 +743,11 @@ void CreateElement()
 		temp->next = NULL;
 		back = temp;
 
-		printf("\nВведите номер автобазы:");
 		char a[999];
-		//memset(a, 0, 999);
-		//while (getchar() != '\n' && !feof(stdin));
+		memset(a, 0, 999);
+		printf("\nВведите номер автобазы:");
+		while (getchar() != '\n' && !feof(stdin)) 
+
 		gets_s(a);
 		temp->info.ABnomber = atoi(a);
 
@@ -761,6 +762,18 @@ void CreateElement()
 		printf("\nВведите количетсво автомобилей:");
 		gets_s(a);
 		temp->info.CarCount = atoi(a);
+
+		int n = -842150451;
+		node* delete_temp = beg;
+		while (delete_temp != back)
+		{
+			if (delete_temp->info.ABnomber == n)
+			{
+				DeleteElement(delete_temp);
+				break;
+			}
+			delete_temp = delete_temp->next;
+		}
 
 		NodesCount++;
 		system("pause");
@@ -805,11 +818,14 @@ void CreateElement()
 	while (delete_temp != back)
 	{
 		if (delete_temp->info.ABnomber == n)
+		{
+			DeleteElement(delete_temp);
 			break;
+		}
 		delete_temp = delete_temp->next;
 
 	}
-	DeleteElement(delete_temp);
+	
 	system("pause");
 }
 
