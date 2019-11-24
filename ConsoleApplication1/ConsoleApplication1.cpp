@@ -73,6 +73,7 @@ const char* items[] =
 	"  Обработка таблицы и просмотр результатов обработки  ",//9
 	"                       Выход                          " //10
 };
+
 const char* choiseOFaverageITEMS[] =
 {
 	"  _____________________   Выберите пункт   ________________________",
@@ -80,9 +81,18 @@ const char* choiseOFaverageITEMS[] =
 	"          Подсчитать средний расход топлива по городу              ",
 	"  назад  "
 };
+
 const char* choiseOFSaveITEMS[] =
 {
 	"___Какой тип файла вам нужен для сохранения данных об автобазах?___",
+	"                             Текстовый                             ",
+	"                             Бинарный                              ",
+	"  назад  "
+};
+
+const char* choiseOFLoadITEMS[] =
+{
+	"____________Какого типа файл вы хотите импортировать?______________",
 	"                             Текстовый                             ",
 	"                             Бинарный                              ",
 	"  назад  "
@@ -109,10 +119,12 @@ int Menu(); //меню
 void PrintMenu(int item, const char **itemshow, const int maxel); //Отрисовка пунктов меню
 
 void FirstEl(); //Импорт таблицы из текстового файла
-void ExportTable(); //Экспорт таблицы в текстовый файл
+void BinLoad(); //Загрузка данных из бинарного файла
+void LoadInterface();
 
+void ExportTable(); //Экспорт таблицы в текстовый файл
 void BinSave(); //Сохранение таблицы в бинарный файл
-void SaveInterFace();
+void SaveInterface();
 
 void sEl(node* beg); //Поиск записи по ключу
 void SortList(); //Сортировка
@@ -147,7 +159,7 @@ int main() {
 	{
 		switch (Menu())
 		{
-		case 1: FirstEl();
+		case 1: LoadInterface();
 			break;
 		case 2: Prosmotr(beg);
 			break;
@@ -161,7 +173,7 @@ int main() {
 			break;
 		case 7: sEl(beg);
 			break;
-		case 8: SaveInterFace();
+		case 8: SaveInterface();
 			break;
 		case 9: AverageChoise();
 			break;
@@ -552,7 +564,104 @@ void FirstEl() {
 	system("pause");
 }
 
-//----------------------------просмотр очереди---------------------------
+void BinLoad()
+{
+	if (beg != NULL || back != NULL)
+	{
+		system("cls");
+		printf("Чтобы загрузить таблицу, нужно удалить существующую...\n");
+		printf("Удалить существующую таблицу?");
+		char c;
+		int MenuItem = 1;
+		DrawAffirmationItems(MenuItem);
+		while (c = _getch()) //Получаем номер пукнта меню
+		{
+			if (c == EnterKeyCode) break;
+			else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+			else if (c == DownKeyCode && MenuItem < 2)	MenuItem++;
+			system("cls");
+			printf("Чтобы загрузить таблицу, нужно удалить существующую...\n");
+			printf("Удалить существующую таблицу?");
+			DrawAffirmationItems(MenuItem);
+		}
+		switch (MenuItem)
+		{
+		case 1:
+			return;
+			break;
+		case 2:
+			system("cls");
+			Delete();
+			printf("Таблица удалена!\n");
+			system("pause");
+			break;
+		}
+	}
+	system("cls");
+
+	errno_t err;
+	FILE* in = NULL;
+	err = fopen_s(&in, BinFileName, "rb");
+	if (err != 0)
+	{
+		printf("Не удалось открыть файл для загрузки...\n");
+		system("pause");
+		return;
+	}
+
+	fread(&NodesCount, sizeof(NodesCount), 1, in);
+	beg = new node;
+	fread(beg, sizeof(struct node), 1, in);
+	struct node* temp = beg;
+	for (int i = 1; i < NodesCount; i++)
+	{
+		temp->next = new node;
+		fread(temp->next, sizeof(struct node), 1, in);
+		temp->next->prev = temp;
+		temp = temp->next;
+	}
+	back = temp;
+	fclose(in);
+	printf("Бинарный файл найден\n");
+	printf("Загружено записей: "); printf("%d\n", NodesCount);
+	system("pause");
+}
+
+int ChoiseLoadMenu()
+{
+	int MenuItem = 1;
+	PrintMenu(MenuItem, choiseOFLoadITEMS, MAXMENUCHOISEITEM);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, choiseOFLoadITEMS, MAXMENUCHOISEITEM);
+	};
+	return 0;
+}
+
+void LoadInterface()
+{
+	system("cls");
+
+	while (1)
+	{
+		switch (ChoiseLoadMenu())
+		{
+		case 1: FirstEl();
+			return;
+		case 2: BinLoad();
+			return;
+		case 3:
+			return;
+		default:
+			break;
+		}
+	}
+	return;
+}
 
 void Prosmotr(node* beg) {
 	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
@@ -742,7 +851,7 @@ int ChoiseSaveMenu()
 	return 0;
 }
 
-void SaveInterFace()
+void SaveInterface()
 {
 	system("cls");
 
@@ -761,7 +870,6 @@ void SaveInterFace()
 		}
 	}
 	return;
-
 }
 
 //Вариант 3
