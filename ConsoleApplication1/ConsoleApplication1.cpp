@@ -24,6 +24,7 @@ using namespace std;
 #define DownKeyCode 80 //Код клавиши перехода вниз (по умолчанию 80 - стрелка вниз)
 #define DirectorNameSize 15 //На сколько большое может быть имя у директора
 #define BinFileName "Autobases.db" //Путь/имя файла сохранения/чтения бинарной таблицы
+#define FormatString "|    %-7d|   %-18s|      %-21f|             %-12d|\n"
 
 /************************** Константы *****************************************/
 
@@ -129,7 +130,9 @@ void SaveInterface();
 void sEl(node* beg); //Поиск записи по ключу
 void SortList(); //Сортировка
 
-void Prosmotr(node* beg); //Печать таблицы на экран
+void Prosmotr(node* beg); //просмотр очереди
+void PrintTable(node* beg);//Печать таблицы на экран
+
 void Delete(); //Удаление таблицы (освобождение памяти)
 void DeleteElement(struct node* _node); //удаление элемента
 void DeleteInterface();
@@ -162,7 +165,7 @@ int main() {
 		{
 		case 1: LoadInterface();
 			break;
-		case 2: Prosmotr(beg);
+		case 2: PrintTable(beg);
 			break;
 		case 3: CreateElement();
 			break;
@@ -208,8 +211,8 @@ void DeleteInterface()
 		return;
 	}
 	DeleteElement(temp);
-	cout << "Автобаза удалена из базы";
-	cin.get();
+	cout << "Автобаза " << n << " удалена из базы\n";
+	system("pause");
 	return;
 }
 
@@ -664,7 +667,8 @@ void LoadInterface()
 	return;
 }
 
-void Prosmotr(node* beg) {
+void Prosmotr(node* beg) 
+{
 	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
 	node* temp = beg; //указатель temp устанавливаем в начало
 	system("cls");
@@ -678,6 +682,32 @@ void Prosmotr(node* beg) {
 			
 	}
 	return;
+}
+
+void PrintTable(node* beg)
+{
+	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
+	node* temp = beg; //указатель temp устанавливаем в начало
+	system("cls");
+	printf("Escape - Выход, Enter - Взаимодействие с элементом");
+	printf("Стрелки вверх, вниз - Навигация по листам\n");
+
+	printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
+	printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
+	
+	while (temp)
+	{
+		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+	    printf("|           |                     |                           |                         |\n");
+		printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+		printf("|           |                     |                           |                         |\n");
+		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+		temp = temp->next;
+
+	}
+	system("pause");
+	return;
+
 }
 
 void SortList()
