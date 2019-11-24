@@ -23,6 +23,7 @@ using namespace std;
 #define UpKeyCode 72 //Код клавиши перехода наверх (по умолчанию 72 - стрелка вверх)
 #define DownKeyCode 80 //Код клавиши перехода вниз (по умолчанию 80 - стрелка вниз)
 #define DirectorNameSize 15 //На сколько большое может быть имя у директора
+#define BinFileName "Autobases.db" //Путь/имя файла сохранения/чтения бинарной таблицы
 
 /************************** Константы *****************************************/
 
@@ -60,24 +61,31 @@ char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] = 
 {
-	"$$$$$$$$$$$  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  $$$$$$$$$$$$",
-	"             Начальное создание таблицы               ",//1
+	"___________  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
+	"             Импорт таблицы из файла                  ",//1
 	"                  Просмотр таблицы                    ",//2
 	"          Добавление новой записи в таблицу           ",//3
 	"                  Удаление записи                     ",//4
 	"            Корректировка записи в таблице            ",//5
 	"                Сотрировка таблицы                    ",//6
-	"              Поиск записи в таблице                  ",//7
-	"        Экспорт данных в текстовый файл               ",//Приказ
+	"               Поиск записи в таблице                 ",//7
+	"                Экспорт данных в файл                 ",//Приказ
 	"  Обработка таблицы и просмотр результатов обработки  ",//9
 	"                       Выход                          " //10
 };
 const char* choiseOFaverageITEMS[] =
 {
-	"$$$$$$$$$$$$$$$$$$$$$$$   Выберите пункт   $$$$$$$$$$$$$$$$$$$$$$$$",
+	"  _____________________   Выберите пункт   ________________________",
 	"  Подсчитать средний расход топлива на одну машину по каждой базе  ",
 	"          Подсчитать средний расход топлива по городу              ",
-	"                                ой                                 "
+	"  назад  "
+};
+const char* choiseOFSaveITEMS[] =
+{
+	"___Какой тип файла вам нужен для сохранения данных об автобазах?___",
+	"                             Текстовый                             ",
+	"                             Бинарный                              ",
+	"  назад  "
 };
 
 struct AutoBase
@@ -102,6 +110,9 @@ void PrintMenu(int item, const char **itemshow, const int maxel); //Отрисо
 
 void FirstEl(); //Импорт таблицы из текстового файла
 void ExportTable(); //Экспорт таблицы в текстовый файл
+
+void BinSave(); //Сохранение таблицы в бинарный файл
+void SaveInterFace();
 
 void sEl(node* beg); //Поиск записи по ключу
 void SortList(); //Сортировка
@@ -150,7 +161,7 @@ int main() {
 			break;
 		case 7: sEl(beg);
 			break;
-		case 8: ExportTable();
+		case 8: SaveInterFace();
 			break;
 		case 9: AverageChoise();
 			break;
@@ -290,7 +301,8 @@ void AverageInCityHeroSevastopol(node* beg)
 	printf("Средний расход топлива городу равен %f\n", c);
 	system("pause");
 }
-int ChoiseMenu()
+
+int ChoiseAverageMenu()
 {
 	int MenuItem = 1;
 	PrintMenu(MenuItem, choiseOFaverageITEMS, MAXMENUCHOISEITEM);
@@ -311,7 +323,7 @@ void AverageChoise()
 	
 	while (1)
 	{
-		switch (ChoiseMenu())
+		switch (ChoiseAverageMenu())
 		{
 		case 1: Average1(beg);
 			break;
@@ -508,7 +520,7 @@ void FirstEl() {
 
 	fscanf_s(in, "%d", &NodesCount);
 
-	beg = (struct node*)malloc(sizeof(struct node));
+	beg = new node;
 	beg->prev = NULL;
 	//beg->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
@@ -521,7 +533,7 @@ void FirstEl() {
 
 	for (; RecordCount < NodesCount; RecordCount++)
 	{
-		temp_node->next = (struct node*)malloc(sizeof(struct node));
+		temp_node->next = new node;
 		//temp_node->next->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 		temp_node->next->prev = temp_node;
@@ -678,6 +690,78 @@ void ExportTable()
 	fclose(out);
 	system("pause");
 	return;
+}
+
+void BinSave()
+{
+	system("cls");
+	if (beg == NULL || back == NULL)
+	{
+		printf("Пустая таблица!\n");
+		printf("Что именно вы пытаетесь сохранить?\n");
+		system("pause");
+		return;
+	}
+	errno_t err;
+	FILE* out;
+	err = fopen_s(&out, BinFileName, "wb");
+	if (err != 0)
+	{
+		printf("Не удалось открыть файл для сохранения...\n\
+				Сохранение не произойдёт!");
+		return;
+	}
+	else
+	{
+		fwrite(&NodesCount, sizeof(NodesCount), 1, out);
+		struct node* temp = beg;
+		for (int i = 0; i < NodesCount; i++)
+		{
+			fwrite(temp, sizeof(struct node), 1, out);
+			temp = temp->next;
+		}
+		fclose(out);
+		printf("Файл успешно сохранён в папку с программой\n");
+		system("pause");
+	}
+}
+
+
+int ChoiseSaveMenu()
+{
+	int MenuItem = 1;
+	PrintMenu(MenuItem, choiseOFSaveITEMS, MAXMENUCHOISEITEM);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, choiseOFSaveITEMS, MAXMENUCHOISEITEM);
+	};
+	return 0;
+}
+
+void SaveInterFace()
+{
+	system("cls");
+
+	while (1)
+	{
+		switch (ChoiseSaveMenu())
+		{
+		case 1: ExportTable();
+			break;
+		case 2: BinSave();
+			break;
+		case 3:
+			return;
+		default:
+			break;
+		}
+	}
+	return;
+
 }
 
 //Вариант 3
