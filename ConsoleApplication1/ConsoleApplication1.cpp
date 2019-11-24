@@ -131,11 +131,12 @@ void SortList(); //Сортировка
 
 void Prosmotr(node* beg); //Печать таблицы на экран
 void Delete(); //Удаление таблицы (освобождение памяти)
-void DeleteElement(struct node* _node);
+void DeleteElement(struct node* _node); //удаление элемента
 void DeleteInterface();
 
-void CorrectElement(struct node* temp);
+void CorrectElement(struct node* temp);//Редактирование элемента
 void CorrElInterface();
+
 void CreateElement();//добавление элемента
 
 void Average1(node* beg); //средний расход топлива на одну машину по каждой базе
@@ -732,8 +733,45 @@ void CreateElement()
 {
 	system("cls");
 	printf("Добавление нового элемента:\n");
+	if (beg != NULL || back != NULL)
+	{
+		struct node* temp = new node;
+		//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
-	struct node* temp = (struct node*)malloc(sizeof(struct node));
+		back->next = temp;
+		temp->prev = back;
+		temp->next = NULL;
+		back = temp;
+
+		printf("\nВведите номер автобазы:");
+		char a[999];
+		//memset(a, 0, 999);
+		//while (getchar() != '\n' && !feof(stdin));
+		gets_s(a);
+		temp->info.ABnomber = atoi(a);
+
+		printf("\nВведите имя директора:");
+		gets_s(a);
+		strcpy_s(temp->info.Director, a);
+
+		printf("\nТоплива потрачено:");
+		gets_s(a);
+		temp->info.FuelPOTRACHENO = atof(a);
+
+		printf("\nВведите количетсво автомобилей:");
+		gets_s(a);
+		temp->info.CarCount = atoi(a);
+
+		NodesCount++;
+		system("pause");
+		return;
+	};
+
+	beg = new node;
+	beg->prev = NULL;
+	back = beg;
+
+	struct node* temp = new node;
 	//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 	back->next = temp;
@@ -743,8 +781,8 @@ void CreateElement()
 
 	printf("\nВведите номер автобазы:");
 	char a[999];
-	memset(a, 0, 999);
-	while (getchar() != '\n' && !feof(stdin));
+	//memset(a, 0, 999);
+	//while (getchar() != '\n' && !feof(stdin));
 	gets_s(a);
 	temp->info.ABnomber = atoi(a);
 
@@ -761,6 +799,17 @@ void CreateElement()
 	temp->info.CarCount = atoi(a);
 
 	NodesCount++;
+
+	int n = -842150451;
+	node* delete_temp = beg;
+	while (delete_temp != back)
+	{
+		if (delete_temp->info.ABnomber == n)
+			break;
+		delete_temp = delete_temp->next;
+
+	}
+	DeleteElement(delete_temp);
 	system("pause");
 }
 
