@@ -18,15 +18,16 @@ using namespace std;
 
 /************************** Макросы *******************************************/
 
-const int MAXMENUITEM = 11; //Максимальное количество элементов на главном меню
-const int MAXMENUCHOISEITEM = 4;//Максимальное количество элементов на меню выбора
 #define EnterKeyCode 13 //Код клавиши ввода (по умолчанию 13 - Enter)
 #define EscapeKeyCode 27 //Код клавиши отмены (по умолчанию 27 - Escape)
 #define UpKeyCode 72 //Код клавиши перехода наверх (по умолчанию 72 - стрелка вверх)
 #define DownKeyCode 80 //Код клавиши перехода вниз (по умолчанию 80 - стрелка вниз)
 #define DirectorNameSize 15 //На сколько большое может быть имя у директора
 
+/************************** Константы *****************************************/
 
+const int MAXMENUITEM = 11; //Максимальное количество элементов на главном меню
+const int MAXMENUCHOISEITEM = 4;//Максимальное количество элементов на меню выбора
 
 
 /*********************** Глобальные переменные ****************************/
@@ -194,13 +195,13 @@ void DrawAffirmationItems(int Item)
 {
 	if (Item == 1)
 	{
-		printf("Нет");
-		printf("Да\n");
+		printf("\n$-> Нет <-$\n");
+		printf("    Да    ");
 	}
 	else if (Item == 2)
 	{
-		printf("Нет\n");
-		printf("Да");
+		printf("\n    Нет    \n");
+		printf("-$> Да <$-");
 	}
 }
 
@@ -479,7 +480,7 @@ void FirstEl() {
 		case 2:
 			system("cls");
 			Delete();
-			printf("Таблица удалена!");
+			printf("Таблица удалена!\n");
 			system("pause");
 			break;
 		}
@@ -535,7 +536,7 @@ void FirstEl() {
 	back->next = NULL;
 
 	printf("Загружено записей:"); printf("%d\n", RecordCount);
-
+	fclose(in);
 	system("pause");
 }
 
