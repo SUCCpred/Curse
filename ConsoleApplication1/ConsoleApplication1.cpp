@@ -22,6 +22,7 @@ using namespace std;
 #define EscapeKeyCode 27 //Код клавиши отмены (по умолчанию 27 - Escape)
 #define UpKeyCode 72 //Код клавиши перехода наверх (по умолчанию 72 - стрелка вверх)
 #define DownKeyCode 80 //Код клавиши перехода вниз (по умолчанию 80 - стрелка вниз)
+#define EscapeKeyCode 27 //Код клавиши отмены (по умолчанию 27 - Escape)
 #define DirectorNameSize 15 //На сколько большое может быть имя у директора
 #define BinFileName "Autobases.db" //Путь/имя файла сохранения/чтения бинарной таблицы
 #define FormatString "|    %-7d|   %-18s|      %-21f|             %-12d|\n"
@@ -686,16 +687,22 @@ void Prosmotr(node* beg)
 
 void PrintTable(node* beg)
 {
-	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
+	char c;
+	int elonlist,
+		pages,
+		k = 0;
+	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }	
+//firstPage:
+	elonlist = 1;
+	pages = 1;
 	node* temp = beg; //указатель temp устанавливаем в начало
 	system("cls");
 	printf("Escape - Выход, Enter - Взаимодействие с элементом");
 	printf("Стрелки вверх, вниз - Навигация по листам\n");
-
 	printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 	printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
-	
-	while (temp)
+
+	while (temp && elonlist != 6)
 	{
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 	    printf("|           |                     |                           |                         |\n");
@@ -703,10 +710,82 @@ void PrintTable(node* beg)
 		printf("|           |                     |                           |                         |\n");
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 		temp = temp->next;
-
+		elonlist++;
 	}
-	system("pause");
-	return;
+	cout << "Страница 1";
+	
+	while (c = _getch())
+	{
+		if (c == UpKeyCode)
+		{
+			if (pages != 1)
+			{
+				k = 0;
+				pages--;
+				if (temp->next != NULL)
+				{
+					temp = temp->prev;
+					elonlist--;
+				}
+				while (k != elonlist + 4)
+				{
+					temp = temp->prev;
+					k++;
+				}
+
+				system("cls");
+				printf("Escape - Выход, Enter - Взаимодействие с элементом");
+				printf("Стрелки вверх, вниз - Навигация по листам\n");
+				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
+				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
+				elonlist = 1;
+				while (temp && elonlist != 6)
+				{
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					printf("|           |                     |                           |                         |\n");
+					printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+					printf("|           |                     |                           |                         |\n");
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					if (temp->next == nullptr)break;
+					temp = temp->next;
+					elonlist++;
+
+				}
+				cout << "Страница " << pages;
+			}
+		}
+		
+		//if (c == EscapeKeyCode) return;
+		if (c == DownKeyCode)
+		{
+			if (temp->next != NULL)
+			{
+				elonlist = 1;
+				system("cls");
+				printf("Escape - Выход, Enter - Взаимодействие с элементом");
+				printf("Стрелки вверх, вниз - Навигация по листам\n");
+				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
+				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
+				while (temp && elonlist != 6)
+				{
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					printf("|           |                     |                           |                         |\n");
+					printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+					printf("|           |                     |                           |                         |\n");
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					if (temp->next == nullptr)break;
+					temp = temp->next;
+					elonlist++;
+
+				}
+				pages++;
+				cout << "Страница " << pages;
+			}
+		}
+		
+
+		if (c == EscapeKeyCode) return;
+	};
 
 }
 
