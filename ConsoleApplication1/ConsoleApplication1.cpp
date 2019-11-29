@@ -100,6 +100,23 @@ const char* choiseOFLoadITEMS[] =
 	"  назад  "
 };
 
+const char* choiseOFSortITEMS[] =
+{
+	"________________Как вы хотите сортировать список?__________________",
+	"                             По возрастанию                        ",
+	"                             По убыванию                           ",
+	"  назад  "
+};
+
+const char* SOVFLAG[] =
+{
+	"    ===       ",
+	"    = \     \ ",
+	"       \    ||",
+	"    __  \  // ",
+	"   |  \==|=   "
+};
+
 struct AutoBase
 {
 	char
@@ -129,7 +146,9 @@ void BinSave(); //Сохранение таблицы в бинарный фай
 void SaveInterface();
 
 void sEl(node* beg); //Поиск записи по ключу
-void SortList(); //Сортировка
+void SortListUP(); //Сортировка по возрастанию
+void SortListDOWN(); //Сортировка по убыванию
+void SortInterface();
 
 void Prosmotr(node* beg); //просмотр очереди
 void PrintTable(node* beg);//Печать таблицы на экран
@@ -146,6 +165,7 @@ void CreateElement();//добавление элемента
 void Average1(node* beg); //средний расход топлива на одну машину по каждой базе
 void AverageInCityHeroSevastopol(node* beg); //средний расход топлева по городу ГЕРОЮ Севастополю
 void AverageChoise();//у каждого есть выбор
+void SovyetFlag();
 
 void setColor(ConsoleColor text, ConsoleColor background)
 {
@@ -174,7 +194,7 @@ int main() {
 			break;
 		case 5: CorrElInterface();
 			break;
-		case 6: SortList();
+		case 6: SortInterface();
 			break;
 		case 7: sEl(beg);
 			break;
@@ -403,6 +423,7 @@ int Menu() {
 	char c;
 	while (c = _getch())
 	{
+		if (c == 32) SovyetFlag(); return 10;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -807,7 +828,7 @@ void PrintTable(node* beg)
 
 }
 
-void SortList()
+void SortListUP()
 {
 	for (int i = 0; i < NodesCount - 1; i++)
 	{
@@ -853,6 +874,92 @@ void SortList()
 			temp = temp->prev;
 		}
 	}
+	return;
+}
+
+void SortListDOWN()
+{
+	for (int i = 0; i < NodesCount - 1; i++)
+	{
+		struct node* temp = back;
+		for (int j = (NodesCount - 1); j > i; j--) // для всех элементов после i-ого
+		{
+			if (temp->prev->info.ABnomber < temp->info.ABnomber)
+			{
+				if (temp == back)
+				{
+					struct node* tempprev = temp->prev;
+					tempprev->prev->next = temp;
+					temp->prev = tempprev->prev;
+					temp->next = tempprev;
+					tempprev->prev = temp;
+					tempprev->next = NULL;
+					back = tempprev;
+					temp = tempprev;
+				}
+				else if (temp == beg->next)
+				{
+					struct node* tempnext = temp->next;
+					beg->next = tempnext;
+					beg->prev = temp;
+					tempnext->prev = beg;
+					temp->prev = NULL;
+					temp->next = beg;
+					beg = temp;
+					temp = beg->next;
+				}
+				else
+				{
+					struct node* tempprev = temp->prev;
+					temp->next->prev = tempprev;
+					tempprev->prev->next = temp;
+					temp->prev = tempprev->prev;
+					tempprev->next = temp->next;
+					temp->next = tempprev;
+					tempprev->prev = temp;
+					temp = tempprev;
+				}
+			}
+			temp = temp->prev;
+		}
+	}
+	return;
+}
+
+int SortMenu()
+{
+	int MenuItem = 1;
+	PrintMenu(MenuItem, choiseOFSortITEMS, MAXMENUCHOISEITEM);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, choiseOFSortITEMS, MAXMENUCHOISEITEM);
+	};
+	return 0;
+}
+
+void SortInterface()
+{
+	system("cls");
+	cout << "Ключевым полем является Номер автобазы";
+	while (1)
+	{
+		switch (SortMenu())
+		{
+		case 1: SortListUP();
+			break;
+		case 2: SortListDOWN();
+			break;
+		case 3:
+			return;
+		default:
+			break;
+		}
+	}
+	return;
 }
 
 
@@ -1064,6 +1171,45 @@ void SaveInterface()
 	}
 	return;
 }
+
+int sOVMenu() {
+	int MenuItem = 1;
+	PrintMenu(MenuItem, SOVFLAG, 5);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < 5 - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, SOVFLAG, 5);
+	};
+	return 0;
+}
+
+void SovyetFlag()
+{
+	system("cls");
+	while (1)
+	{
+		switch (sOVMenu())
+		{
+		case 1: SortListUP();
+			return;
+		case 2: 
+			return;
+		case 3:
+			return;
+		case 4:
+			return;
+		case 5: 
+			return;
+		default:
+			break;
+		}
+	}
+	return;
+}
+
 
 //Вариант 3
 //Даны сведения о расходовании на автобазах города ГЕРОЯ Севастополя топлива по следующему макету: номер автобазы, Ф.И.О. директора (15 символов), 
