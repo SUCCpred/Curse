@@ -38,7 +38,7 @@ const int MAXMENUCHOISEITEM = 4;//Максимальное количество 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 struct node* beg, * back; //Указатели на начало и конец списка
 int NodesCount = 0; //Количество нод в списке
-enum ConsoleColor 
+enum ConsoleColor
 {
 	Black = 0,
 	Blue = 1,
@@ -61,7 +61,7 @@ enum ConsoleColor
 char ImportFileName[255]; //Имя файла импорта записей
 char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
-const char* items[] = 
+const char* items[] =
 {
 	"___________  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
 	"             Импорт таблицы из файла                  ",//1
@@ -102,11 +102,11 @@ const char* choiseOFLoadITEMS[] =
 
 struct AutoBase
 {
-	char  
-		  Director[DirectorNameSize];
+	char
+		Director[DirectorNameSize];
 	float FuelPOTRACHENO;
 	int   CarCount,
-		  ABnomber;
+		ABnomber;
 };
 
 struct node
@@ -118,7 +118,7 @@ struct node
 
 /********************* Прототипы функций ***********************************/
 int Menu(); //меню
-void PrintMenu(int item, const char **itemshow, const int maxel); //Отрисовка пунктов меню
+void PrintMenu(int item, const char** itemshow, const int maxel); //Отрисовка пунктов меню
 
 void FirstEl(); //Импорт таблицы из текстового файла
 void BinLoad(); //Загрузка данных из бинарного файла
@@ -147,12 +147,12 @@ void Average1(node* beg); //средний расход топлива на о
 void AverageInCityHeroSevastopol(node* beg); //средний расход топлева по городу ГЕРОЮ Севастополю
 void AverageChoise();//у каждого есть выбор
 
-void setColor(ConsoleColor text, ConsoleColor background) 
+void setColor(ConsoleColor text, ConsoleColor background)
 {
 	SetConsoleTextAttribute(hConsole, (background << 4) | text);
 }
 
-void setPos(COORD& c) 
+void setPos(COORD& c)
 {
 	SetConsoleCursorPosition(hConsole, c);
 }
@@ -288,15 +288,15 @@ void CorrElInterface()
 	return;
 };
 
-void Average1(node* beg) 
+void Average1(node* beg)
 {
 	system("cls");
 	float a;
-	while (beg != 0) 
+	while (beg != 0)
 	{
 		a = (beg->info.FuelPOTRACHENO) / (beg->info.CarCount);
 		cout << endl;
-		printf ("Средний расход топлива на машину по базе %d равен %f\n", beg->info.ABnomber, a);
+		printf("Средний расход топлива на машину по базе %d равен %f\n", beg->info.ABnomber, a);
 		beg = beg->next;
 	}
 	system("pause");
@@ -306,8 +306,8 @@ void AverageInCityHeroSevastopol(node* beg)
 {
 	system("cls");
 	float a = 0,
-		  b = 0,
-		  c = 0;
+		b = 0,
+		c = 0;
 	while (beg != 0)
 	{
 		a = a + beg->info.FuelPOTRACHENO;
@@ -337,7 +337,7 @@ int ChoiseAverageMenu()
 void AverageChoise()
 {
 	system("cls");
-	
+
 	while (1)
 	{
 		switch (ChoiseAverageMenu())
@@ -355,23 +355,23 @@ void AverageChoise()
 	return;
 }
 
-void Print(const node& t) 
+void Print(const node& t)
 {
 	printf_s("Номер автобазы: %d\n", t.info.ABnomber);
-	cout << "Имя директора: " <<  t.info.Director << endl;
+	cout << "Имя директора: " << t.info.Director << endl;
 	printf_s("Израсходовано топлива: %f\n", t.info.FuelPOTRACHENO);
 	printf_s("Количество автомобилей : %d\n", t.info.CarCount);
 }
 
-void sEl(node* beg) 
+void sEl(node* beg)
 {
 	int n;
 	system("cls");
 	cout << "Введите нормер нужной автобазы:\n";
 	cin >> n;
-	while (beg->next != 0) 
+	while (beg->next != 0)
 	{
-		if (n == beg->info.ABnomber) 
+		if (n == beg->info.ABnomber)
 		{
 			Print(*beg);
 			break;
@@ -385,7 +385,7 @@ void sEl(node* beg)
 	system("pause");
 }
 
-void PrintMenu(int item, const char **itemshow, const int maxel)
+void PrintMenu(int item, const char** itemshow, const int maxel)
 {
 	system("cls");
 	int i = 1;
@@ -401,10 +401,10 @@ int Menu() {
 	int MenuItem = 1;
 	PrintMenu(MenuItem, items, MAXMENUITEM);
 	char c;
-	while (c = _getch()) 
+	while (c = _getch())
 	{
 		if (c == EnterKeyCode) return MenuItem;
-		else if (c == DownKeyCode && MenuItem < MAXMENUITEM-1) MenuItem++;
+		else if (c == DownKeyCode && MenuItem < MAXMENUITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
 		PrintMenu(MenuItem, items, MAXMENUITEM);
 	};
@@ -668,19 +668,19 @@ void LoadInterface()
 	return;
 }
 
-void Prosmotr(node* beg) 
+void Prosmotr(node* beg)
 {
 	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
 	node* temp = beg; //указатель temp устанавливаем в начало
 	system("cls");
 	cout << "==============================" << endl;
-	while (temp) 
+	while (temp)
 	{
-				Print(*temp); //печатаем значения элемента по указателю
-				cout << "==============================" << endl;
-				system("pause");
-				temp = temp->next;
-			
+		Print(*temp); //печатаем значения элемента по указателю
+		cout << "==============================" << endl;
+		system("pause");
+		temp = temp->next;
+
 	}
 	return;
 }
@@ -690,9 +690,10 @@ void PrintTable(node* beg)
 	char c;
 	int elonlist,
 		pages,
+		lastpage,
 		k = 0;
-	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }	
-//firstPage:
+	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
+	//firstPage:
 	elonlist = 1;
 	pages = 1;
 	node* temp = beg; //указатель temp устанавливаем в начало
@@ -705,15 +706,16 @@ void PrintTable(node* beg)
 	while (temp && elonlist != 6)
 	{
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
-	    printf("|           |                     |                           |                         |\n");
+		printf("|           |                     |                           |                         |\n");
 		printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
 		printf("|           |                     |                           |                         |\n");
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+
 		temp = temp->next;
 		elonlist++;
 	}
 	cout << "Страница 1";
-	
+
 	while (c = _getch())
 	{
 		if (c == UpKeyCode)
@@ -722,7 +724,7 @@ void PrintTable(node* beg)
 			{
 				k = 0;
 				pages--;
-				if (temp->next != NULL)
+				if (temp && temp->next != NULL)
 				{
 					temp = temp->prev;
 					elonlist--;
@@ -754,11 +756,11 @@ void PrintTable(node* beg)
 				cout << "Страница " << pages;
 			}
 		}
-		
-		//if (c == EscapeKeyCode) return;
+
+
 		if (c == DownKeyCode)
 		{
-			if (temp->next != NULL)
+			if (temp && temp->next != NULL)
 			{
 				elonlist = 1;
 				system("cls");
@@ -776,13 +778,29 @@ void PrintTable(node* beg)
 					if (temp->next == nullptr)break;
 					temp = temp->next;
 					elonlist++;
-
 				}
 				pages++;
+				lastpage = pages + 1;
 				cout << "Страница " << pages;
 			}
+			else if (elonlist == 6)
+			{
+					system("cls");
+					printf("Escape - Выход, Enter - Взаимодействие с элементом");
+					printf("Стрелки вверх, вниз - Навигация по листам\n");
+					printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
+					printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					printf("|           |                     |                           |                         |\n");
+					printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+					printf("|           |                     |                           |                         |\n");
+					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+					cout << "Страница " << lastpage;
+					pages = lastpage;
+					elonlist = 1;
+			}
 		}
-		
+
 
 		if (c == EscapeKeyCode) return;
 	};
@@ -855,9 +873,9 @@ void CreateElement()
 		char a[999];
 		memset(a, 0, 999);
 		printf("\nВведите номер автобазы:");
-		while (getchar() != '\n' && !feof(stdin)) 
+		while (getchar() != '\n' && !feof(stdin));
 
-		gets_s(a);
+			gets_s(a);
 		temp->info.ABnomber = atoi(a);
 
 		printf("\nВведите имя директора:");
@@ -900,11 +918,12 @@ void CreateElement()
 	temp->prev = back;
 	temp->next = NULL;
 	back = temp;
+	beg = back;
 
 	printf("\nВведите номер автобазы:");
 	char a[999];
-	//memset(a, 0, 999);
-	//while (getchar() != '\n' && !feof(stdin));
+	memset(a, 0, 999);
+	while (getchar() != '\n' && !feof(stdin));
 	gets_s(a);
 	temp->info.ABnomber = atoi(a);
 
@@ -934,7 +953,7 @@ void CreateElement()
 		delete_temp = delete_temp->next;
 
 	}
-	
+
 	system("pause");
 }
 
