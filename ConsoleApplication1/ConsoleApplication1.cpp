@@ -31,7 +31,7 @@ using namespace std;
 
 const int MAXMENUITEM = 11; //Максимальное количество элементов на главном меню
 const int MAXMENUCHOISEITEM = 4;//Максимальное количество элементов на меню выбора
-
+const int MAXMENUSUREITEM = 3;
 
 /*********************** Глобальные переменные ****************************/
 
@@ -63,17 +63,17 @@ char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] =
 {
-	"___________  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
-	"             Импорт таблицы из файла                  ",//1
-	"                  Просмотр таблицы                    ",//2
-	"          Добавление новой записи в таблицу           ",//3
-	"                  Удаление записи                     ",//4
-	"            Корректировка записи в таблице            ",//5
-	"                Сотрировка таблицы                    ",//6
-	"               Поиск записи в таблице                 ",//7
-	"                Экспорт данных в файл                 ",//Приказ
-	"  Обработка таблицы и просмотр результатов обработки  ",//9
-	"                       Выход                          " //10
+	"      ___________  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
+	"               Импорт таблицы из файла                 ",//1
+	"                  Просмотр таблицы                     ",//2
+	"           Добавление новой записи в таблицу           ",//3
+	"                   Удаление записи                     ",//4
+	"             Корректировка записи в таблице            ",//5
+	"                  Сотрировка таблицы                   ",//6
+	"                Поиск записи в таблице                 ",//7
+	"                 Экспорт данных в файл                 ",//Приказ
+	"   Обработка таблицы и просмотр результатов обработки  ",//9
+	"                _______  Выход  _______                " //10
 };
 
 const char* choiseOFaverageITEMS[] =
@@ -86,7 +86,7 @@ const char* choiseOFaverageITEMS[] =
 
 const char* choiseOFSaveITEMS[] =
 {
-	"___Какой тип файла вам нужен для сохранения данных об автобазах?___",
+	"__ Какой тип файла вам нужен для сохранения данных об автобазах? __",
 	"                             Текстовый                             ",
 	"                             Бинарный                              ",
 	"  назад  "
@@ -94,7 +94,7 @@ const char* choiseOFSaveITEMS[] =
 
 const char* choiseOFLoadITEMS[] =
 {
-	"____________Какого типа файл вы хотите импортировать?______________",
+	"__________  Какого типа файл вы хотите импортировать?  ____________",
 	"                             Текстовый                             ",
 	"                             Бинарный                              ",
 	"  назад  "
@@ -102,12 +102,18 @@ const char* choiseOFLoadITEMS[] =
 
 const char* choiseOFSortITEMS[] =
 {
-	"________________Как вы хотите сортировать список?__________________",
-	"                             По возрастанию                        ",
-	"                             По убыванию                           ",
+	"______________  Как вы хотите сортировать список?  ________________",
+	"                         По возрастанию                        ",
+	"                         По убыванию                           ",
 	"  назад  "
 };
 
+const char* SureItems[] =
+{
+	"__________________________  ВЫ УВЕРЕНЫ?   __________________________",
+	"                               Да                                   ",
+	"                               НЕТ                                  "
+};
 
 struct AutoBase
 {
@@ -129,11 +135,11 @@ struct node
 int Menu(); //меню
 void PrintMenu(int item, const char** itemshow, const int maxel); //Отрисовка пунктов меню
 
-void FirstEl(); //Импорт таблицы из текстового файла
+void TextLoad(); //Импорт таблицы из текстового файла
 void BinLoad(); //Загрузка данных из бинарного файла
 void LoadInterface();
 
-void ExportTable(); //Экспорт таблицы в текстовый файл
+void TextSave(); //Экспорт таблицы в текстовый файл
 void BinSave(); //Сохранение таблицы в бинарный файл
 void SaveInterface();
 
@@ -142,12 +148,12 @@ void SortListUP(); //Сортировка по возрастанию
 void SortListDOWN(); //Сортировка по убыванию
 void SortInterface();
 
-void Prosmotr(node* beg); //просмотр очереди
 void PrintTable(node* beg);//Печать таблицы на экран
 
 void Delete(); //Удаление таблицы (освобождение памяти)
 void DeleteElement(struct node* _node); //удаление элемента
 void DeleteInterface();
+void SureDelete(struct node* _node); //Вы уверены?
 
 void CorrectElement(struct node* temp);//Редактирование элемента
 void CorrElInterface();
@@ -171,7 +177,7 @@ void setPos(COORD& c)
 
 int main() {
 	setlocale(LC_ALL, "Russian");
-	setColor(Yellow, Red);
+	setColor(Yellow, Blue);
 	while (1)
 	{
 		switch (Menu())
@@ -223,13 +229,44 @@ void DeleteInterface()
 		cin.get();
 		return;
 	}
-	DeleteElement(temp);
-	cout << "Автобаза " << n << " удалена из базы\n";
-	system("pause");
+	SureDelete(temp);
 	return;
 }
 
+int SureMenu()
+{
+	int MenuItem = 1;
+	PrintMenu(MenuItem, SureItems, MAXMENUSUREITEM);
+	char c;
+	while (c = _getch())
+	{
+		if (c == EnterKeyCode) return MenuItem;
+		else if (c == DownKeyCode && MenuItem < MAXMENUSUREITEM - 1) MenuItem++;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		PrintMenu(MenuItem, SureItems, MAXMENUSUREITEM);
+	};
+	return 0;
+}
 
+void SureDelete(struct node* _node)
+{
+	system("cls");
+	cout << "Автобаза " << _node->info.ABnomber << " будет удалена!" << endl;
+	system("pause");
+	while (1)
+	{
+		switch (SureMenu())
+		{
+		case 1: DeleteElement(_node);
+			return;
+		case 2:
+			return;
+		default:
+			break;
+		}
+	}
+	return;
+}
 
 void DrawAffirmationItems(int Item)
 {
@@ -303,12 +340,14 @@ void CorrElInterface()
 void Average1(node* beg)
 {
 	system("cls");
+	printf("Средний расход топлива ");
 	float a;
 	while (beg != 0)
 	{
 		a = (beg->info.FuelPOTRACHENO) / (beg->info.CarCount);
+		printf("по базе %d равен %f\n", beg->info.ABnomber, a);
 		cout << endl;
-		printf("Средний расход топлива на машину по базе %d равен %f\n", beg->info.ABnomber, a);
+		printf("                       ");
 		beg = beg->next;
 	}
 	system("pause");
@@ -338,6 +377,7 @@ int ChoiseAverageMenu()
 	char c;
 	while (c = _getch())
 	{
+		if (c == EscapeKeyCode) return 3;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -403,10 +443,10 @@ void PrintMenu(int item, const char** itemshow, const int maxel)
 	int i = 1;
 	cout << itemshow[0] << endl;
 	for (; i < item; i++)
-		cout << "  " << itemshow[i] << endl;
-	cout << "-$>" << itemshow[i++] << "<$-\n";
+		cout << "      " << itemshow[i] << endl;
+	cout << "-+==$>" << itemshow[i++] << "<$==+-\n";
 	for (; i < maxel; i++)
-		cout << "  " << itemshow[i] << endl;
+		cout << "      " << itemshow[i] << endl;
 };
 
 int Menu() {
@@ -438,6 +478,7 @@ void Delete()
 
 void DeleteElement(struct node* _node)
 {
+	int n = _node->info.ABnomber;
 	if (beg == back)
 	{
 		free(_node);
@@ -463,6 +504,8 @@ void DeleteElement(struct node* _node)
 		free(_node);
 	}
 	NodesCount--;
+	cout << "Автобаза " << n << " удалена из базы\n";
+	system("pause");
 }
 
 int GetStructLine(FILE* in, char* temp, int size)
@@ -493,7 +536,7 @@ int GetStructLine(FILE* in, char* temp, int size)
 	return 1;
 }
 
-void FirstEl() {
+void TextLoad() {
 
 
 	if (beg != NULL || back != NULL)
@@ -552,7 +595,6 @@ void FirstEl() {
 
 	beg = new node;
 	beg->prev = NULL;
-	//beg->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 	fscanf_s(in, "%d", &beg->info.ABnomber);
 	GetStructLine(in, beg->info.Director, DirectorNameSize);
@@ -564,8 +606,6 @@ void FirstEl() {
 	for (; RecordCount < NodesCount; RecordCount++)
 	{
 		temp_node->next = new node;
-		//temp_node->next->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
-
 		temp_node->next->prev = temp_node;
 		temp_node = temp_node->next;
 
@@ -652,6 +692,7 @@ int ChoiseLoadMenu()
 	char c;
 	while (c = _getch())
 	{
+		if (c == EscapeKeyCode) return 3;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -668,7 +709,7 @@ void LoadInterface()
 	{
 		switch (ChoiseLoadMenu())
 		{
-		case 1: FirstEl();
+		case 1: TextLoad();
 			return;
 		case 2: BinLoad();
 			return;
@@ -681,23 +722,6 @@ void LoadInterface()
 	return;
 }
 
-void Prosmotr(node* beg)
-{
-	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
-	node* temp = beg; //указатель temp устанавливаем в начало
-	system("cls");
-	cout << "==============================" << endl;
-	while (temp)
-	{
-		Print(*temp); //печатаем значения элемента по указателю
-		cout << "==============================" << endl;
-		system("pause");
-		temp = temp->next;
-
-	}
-	return;
-}
-
 void PrintTable(node* beg)
 {
 	char c;
@@ -705,7 +729,13 @@ void PrintTable(node* beg)
 		pages,
 		lastpage,
 		k = 0;
-	if (!beg) { system("cls");  cout << "Данные отсутствуют..." << endl; system("pause");  return; }
+	if (!beg) 
+	{
+		system("cls");  cout << "Данные отсутствуют..." << endl;
+		cout << "Сначала необходимо импортировать таблицу из файла или создать новую" << endl;  
+		system("pause");  
+		return;
+	}
 	//firstPage:
 	elonlist = 1;
 	pages = 1;
@@ -866,6 +896,9 @@ void SortListUP()
 			temp = temp->prev;
 		}
 	}
+	system("cls");
+	cout << "Таблица успешно отсортирована по возрастанию\n";
+		system("pause");
 	return;
 }
 
@@ -915,6 +948,9 @@ void SortListDOWN()
 			temp = temp->prev;
 		}
 	}
+	system("cls");
+	cout << "Таблица успешно отсортирована по убыванию\n";
+	system("pause");
 	return;
 }
 
@@ -925,6 +961,7 @@ int SortMenu()
 	char c;
 	while (c = _getch())
 	{
+		if (c == EscapeKeyCode) return 3;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -942,9 +979,9 @@ void SortInterface()
 		switch (SortMenu())
 		{
 		case 1: SortListUP();
-			break;
+			return;
 		case 2: SortListDOWN();
-			break;
+			return;
 		case 3:
 			return;
 		default:
@@ -1056,7 +1093,7 @@ void CreateElement()
 	system("pause");
 }
 
-void ExportTable()
+void TextSave()
 {
 	system("cls");
 	if (beg == NULL || back == NULL)
@@ -1135,6 +1172,7 @@ int ChoiseSaveMenu()
 	char c;
 	while (c = _getch())
 	{
+		if (c == EscapeKeyCode) return 3;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUCHOISEITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -1151,7 +1189,7 @@ void SaveInterface()
 	{
 		switch (ChoiseSaveMenu())
 		{
-		case 1: ExportTable();
+		case 1: TextSave();
 			break;
 		case 2: BinSave();
 			break;
