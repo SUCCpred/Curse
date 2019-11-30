@@ -108,13 +108,6 @@ const char* choiseOFSortITEMS[] =
 	"  назад  "
 };
 
-const char* SureItems[] =
-{
-	"__________________________  ВЫ УВЕРЕНЫ?   __________________________",
-	"                               Да                                   ",
-	"                               НЕТ                                  "
-};
-
 struct AutoBase
 {
 	char
@@ -153,7 +146,6 @@ void PrintTable(node* beg);//Печать таблицы на экран
 void Delete(); //Удаление таблицы (освобождение памяти)
 void DeleteElement(struct node* _node); //удаление элемента
 void DeleteInterface();
-void SureDelete(struct node* _node); //Вы уверены?
 
 void CorrectElement(struct node* temp);//Редактирование элемента
 void CorrElInterface();
@@ -209,6 +201,21 @@ int main() {
 	}
 	return 0;
 }
+
+void DrawAffirmationItems(int Item)
+{
+	if (Item == 1)
+	{
+		printf("\n$-> Нет <-$\n");
+		printf("    Да    ");
+	}
+	else if (Item == 2)
+	{
+		printf("\n    Нет    \n");
+		printf("-$> Да <$-");
+	}
+}
+
 void DeleteInterface()
 {
 	int n;
@@ -229,58 +236,38 @@ void DeleteInterface()
 		cin.get();
 		return;
 	}
-	SureDelete(temp);
-	return;
-}
-
-int SureMenu()
-{
-	int MenuItem = 1;
-	PrintMenu(MenuItem, SureItems, MAXMENUSUREITEM);
-	char c;
-	while (c = _getch())
-	{
-		if (c == EnterKeyCode) return MenuItem;
-		else if (c == DownKeyCode && MenuItem < MAXMENUSUREITEM - 1) MenuItem++;
-		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
-		PrintMenu(MenuItem, SureItems, MAXMENUSUREITEM);
-	};
-	return 0;
-}
-
-void SureDelete(struct node* _node)
-{
-	system("cls");
-	cout << "Автобаза " << _node->info.ABnomber << " будет удалена!" << endl;
-	system("pause");
-	while (1)
-	{
-		switch (SureMenu())
+		system("cls");
+		printf("Автобаза %d будет удалена!\n", n);
+		printf("Вы уверены?");
+		char c;
+		int MenuItem = 1;
+		DrawAffirmationItems(MenuItem);
+		while (c = _getch()) //Получаем номер пукнта меню
 		{
-		case 1: DeleteElement(_node);
+			if (c == EnterKeyCode) break;
+			else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+			else if (c == DownKeyCode && MenuItem < 2)	MenuItem++;
+			system("cls");
+			printf("Автобаза %d будет удалена!\n", n);
+			printf("Вы уверены?");
+			DrawAffirmationItems(MenuItem);
+		}
+		switch (MenuItem)
+		{
+		case 1:
 			return;
+			break;
 		case 2:
-			return;
-		default:
+			system("cls");
+			DeleteElement(temp);
+			printf("Автобаза %d удалена\n", n);
+			system("pause");
 			break;
 		}
-	}
 	return;
 }
 
-void DrawAffirmationItems(int Item)
-{
-	if (Item == 1)
-	{
-		printf("\n$-> Нет <-$\n");
-		printf("    Да    ");
-	}
-	else if (Item == 2)
-	{
-		printf("\n    Нет    \n");
-		printf("-$> Да <$-");
-	}
-}
+
 
 void CorrectElement(struct node* temp)
 {
@@ -478,7 +465,6 @@ void Delete()
 
 void DeleteElement(struct node* _node)
 {
-	int n = _node->info.ABnomber;
 	if (beg == back)
 	{
 		free(_node);
@@ -504,8 +490,6 @@ void DeleteElement(struct node* _node)
 		free(_node);
 	}
 	NodesCount--;
-	cout << "Автобаза " << n << " удалена из базы\n";
-	system("pause");
 }
 
 int GetStructLine(FILE* in, char* temp, int size)
