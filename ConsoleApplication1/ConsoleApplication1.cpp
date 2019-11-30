@@ -63,14 +63,14 @@ char ExportFileName[255]; //Имя файла экспорта записей
 //Основное меню
 const char* items[] =
 {
-	"      ___________  СВЕЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
+	"      ___________  СВЕДЕНИЯ О РАСХОДЕ ТОПЛИВА  ____________",
 	"               Импорт таблицы из файла                 ",//1
 	"                  Просмотр таблицы                     ",//2
 	"           Добавление новой записи в таблицу           ",//3
 	"                   Удаление записи                     ",//4
 	"             Корректировка записи в таблице            ",//5
-	"                  Сотрировка таблицы                   ",//6
-	"                Поиск записи в таблице                 ",//7
+	"                   Сотрировка таблицы                  ",//6
+	"                 Поиск записи в таблице                ",//7
 	"                 Экспорт данных в файл                 ",//Приказ
 	"   Обработка таблицы и просмотр результатов обработки  ",//9
 	"                _______  Выход  _______                " //10
@@ -168,8 +168,12 @@ void setPos(COORD& c)
 }
 
 int main() {
+	COORD asd = { 0, 0 };
+	asd.X = 12;
+	asd.Y = 11;
+	setPos(asd);
 	setlocale(LC_ALL, "Russian");
-	setColor(Yellow, Blue);
+	setColor(Yellow, Red);
 	while (1)
 	{
 		switch (Menu())
@@ -402,26 +406,147 @@ void Print(const node& t)
 	printf_s("Количество автомобилей : %d\n", t.info.CarCount);
 }
 
+void DrawSerchItems(int Item)
+{
+	if (Item == 1)
+	{
+		printf("\n$-> Номер автобазы <-$\n");
+		printf("    Фамилия директора\n");
+		printf("    Топлива потрачено\n");
+		printf("    Количество автомобилей\n");
+	}
+	else if (Item == 2)
+	{
+		printf("\n    Номер автобазы\n");
+		printf("$-> Фамилия директора <-$\n");
+		printf("    Топлива потрачено\n");
+		printf("    Количество автомобилей\n");
+	}
+	else if (Item == 3)
+	{
+		printf("\n    Номер автобазы\n");
+		printf("    Фамилия директора\n");
+		printf("$-> Топлива потрачено <-$\n");
+		printf("    Количество автомобилей\n");
+	}
+	else if (Item == 4)
+	{
+		printf("\n    Номер автобазы\n");
+		printf("    Фамилия директора\n");
+		printf("    Топлива потрачено\n");
+		printf("$-> Количество автомобилей <-$\n");
+	}
+}
+
 void sEl(node* beg)
 {
-	int n;
+	int n, cc;
+	char d[DirectorNameSize];
+	float f;
 	system("cls");
-	cout << "Введите нормер нужной автобазы:\n";
-	cin >> n;
-	while (beg->next != 0)
+	cout << "По какому полю осуществить поиск?\n";
+	char c;
+	int MenuItem = 1;
+	DrawSerchItems(MenuItem);
+	while (c = _getch()) //Получаем номер пукнта меню
 	{
-		if (n == beg->info.ABnomber)
+		if (c == EnterKeyCode) break;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		else if (c == DownKeyCode && MenuItem < 4)	MenuItem++;
+		system("cls");
+		cout << "По какому полю осуществить поиск?\n";
+		DrawSerchItems(MenuItem);
+	}
+	switch (MenuItem)
+	{
+	case 1:
+		system("cls");
+		cout << "Введите нормер нужной автобазы:\n";
+		cin >> n;
+		while (beg->next != 0)
 		{
-			Print(*beg);
-			break;
+			if (n == beg->info.ABnomber)
+			{
+				Print(*beg);
+				break;
+			}
+			beg = beg->next;
 		}
-		beg = beg->next;
+		if (beg->info.ABnomber != n)
+		{
+			cout << "Нет автобазы с номером " << n << endl;
+		}
+		system("pause");
+		break;
+		return;
+
+	case 2:
+		system("cls");
+		cout << "Введите фамилию директора нужной автобазы:\n";
+		memset(d, 'Н', DirectorNameSize);
+		cin >> d;
+		//gets_s(d);
+		//scanf_s("%s", d);
+		while (beg->next != 0)
+		{
+			if (d == beg->info.Director)
+			{
+				Print(*beg);
+				break;
+			}
+			beg = beg->next;
+		}
+		if (beg->info.Director != d)
+		{
+			cout << "Нет автобазы с директором " << d << endl;
+		}
+		system("pause");
+		break;
+		return;
+
+	case 3:
+		system("cls");
+		cout << "Введите количество потраченного топлива на нужной автобазе:\n";
+		cin >> f;
+		while (beg->next != 0)
+		{
+			if (f == beg->info.FuelPOTRACHENO)
+			{
+				Print(*beg);
+				break;
+			}
+			beg = beg->next;
+		}
+		if (beg->info.FuelPOTRACHENO != f)
+		{
+			cout << "Нет автобазы с такими затратами топлива\n";
+		}
+		system("pause");
+		break;
+		return;
+
+	case 4:
+		system("cls");
+		cout << "Введите количество автомобилей на нужной автобазе:\n";
+		cin >> cc;
+		while (beg->next != 0)
+		{
+			if (cc == beg->info.CarCount)
+			{
+				Print(*beg);
+				break;
+			}
+			beg = beg->next;
+		}
+		if (beg->info.CarCount != cc)
+		{
+			cout << "Нет автобазы с таким количеством машин\n";
+		}
+		system("pause");
+		break;
+		return;
 	}
-	if (beg->info.ABnomber != n)
-	{
-		cout << "Нет автобазы с номером " << n << endl;
-	}
-	system("pause");
+	
 }
 
 void PrintMenu(int item, const char** itemshow, const int maxel)
@@ -431,7 +556,7 @@ void PrintMenu(int item, const char** itemshow, const int maxel)
 	cout << itemshow[0] << endl;
 	for (; i < item; i++)
 		cout << "      " << itemshow[i] << endl;
-	cout << "-+==$>" << itemshow[i++] << "<$==+-\n";
+	cout << "=====>" << itemshow[i++] << "<=====\n";
 	for (; i < maxel; i++)
 		cout << "      " << itemshow[i] << endl;
 };
@@ -500,7 +625,6 @@ int GetStructLine(FILE* in, char* temp, int size)
 	while (c = fgetc(in))
 	{
 		if (c == EOF) return 0;
-		//else if (c < 0) continue;
 		if (c != '.' && !flag) continue;
 		else if (c == '.')
 		{
@@ -725,7 +849,7 @@ void PrintTable(node* beg)
 	pages = 1;
 	node* temp = beg; //указатель temp устанавливаем в начало
 	system("cls");
-	printf("Escape - Выход, Enter - Взаимодействие с элементом");
+	printf("Escape - Выход ");
 	printf("Стрелки вверх, вниз - Навигация по листам\n");
 	printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 	printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
@@ -763,7 +887,7 @@ void PrintTable(node* beg)
 				}
 
 				system("cls");
-				printf("Escape - Выход, Enter - Взаимодействие с элементом");
+				printf("Escape - Выход ");
 				printf("Стрелки вверх, вниз - Навигация по листам\n");
 				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
@@ -791,7 +915,7 @@ void PrintTable(node* beg)
 			{
 				elonlist = 1;
 				system("cls");
-				printf("Escape - Выход, Enter - Взаимодействие с элементом");
+				printf("Escape - Выход ");
 				printf("Стрелки вверх, вниз - Навигация по листам\n");
 				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
@@ -813,7 +937,7 @@ void PrintTable(node* beg)
 			else if (elonlist == 6)
 			{
 					system("cls");
-					printf("Escape - Выход, Enter - Взаимодействие с элементом");
+					printf("Escape - Выход ");
 					printf("Стрелки вверх, вниз - Навигация по листам\n");
 					printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 					printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
@@ -982,6 +1106,8 @@ void CreateElement()
 	printf("____Добавление нового элемента____\n");
 	if (beg != NULL || back != NULL)
 	{
+		struct node* ab = new node;
+		ab = beg;
 		struct node* temp = new node;
 		//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
@@ -996,6 +1122,30 @@ void CreateElement()
 		while (getchar() != '\n' && !feof(stdin));
 
 			gets_s(a);
+			int m = atoi(a);
+			while (ab->next != 0)
+			{
+				if (m == ab->info.ABnomber)
+				{
+					cout << "Автобаза под таким номером уже сужествует!\n";
+						system("pause");
+						CreateElement();
+						int n = -842150451;
+						node* delete_temp = beg;
+						while (delete_temp != back)
+						{
+							if (delete_temp->info.ABnomber == n)
+							{
+								DeleteElement(delete_temp);
+								break;
+							}
+							delete_temp = delete_temp->next;
+						}
+						return;
+				}
+				ab = ab->next;
+			}
+			if (ab->info.ABnomber != m)
 		temp->info.ABnomber = atoi(a);
 
 		printf("\nВведите имя директора:");
