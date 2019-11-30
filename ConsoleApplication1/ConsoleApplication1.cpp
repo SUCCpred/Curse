@@ -108,14 +108,6 @@ const char* choiseOFSortITEMS[] =
 	"  назад  "
 };
 
-const char* SOVFLAG[] =
-{
-	"    ===       ",
-	"    = \     \ ",
-	"       \    ||",
-	"    __  \  // ",
-	"   |  \==|=   "
-};
 
 struct AutoBase
 {
@@ -423,7 +415,7 @@ int Menu() {
 	char c;
 	while (c = _getch())
 	{
-		if (c == 32) SovyetFlag(); return 10;
+		//if (c == 32) SovyetFlag(); return 10;
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -1172,43 +1164,6 @@ void SaveInterface()
 	return;
 }
 
-int sOVMenu() {
-	int MenuItem = 1;
-	PrintMenu(MenuItem, SOVFLAG, 5);
-	char c;
-	while (c = _getch())
-	{
-		if (c == EnterKeyCode) return MenuItem;
-		else if (c == DownKeyCode && MenuItem < 5 - 1) MenuItem++;
-		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
-		PrintMenu(MenuItem, SOVFLAG, 5);
-	};
-	return 0;
-}
-
-void SovyetFlag()
-{
-	system("cls");
-	while (1)
-	{
-		switch (sOVMenu())
-		{
-		case 1: SortListUP();
-			return;
-		case 2: 
-			return;
-		case 3:
-			return;
-		case 4:
-			return;
-		case 5: 
-			return;
-		default:
-			break;
-		}
-	}
-	return;
-}
 
 
 //Вариант 3
