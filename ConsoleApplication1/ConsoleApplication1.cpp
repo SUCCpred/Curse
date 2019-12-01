@@ -1125,10 +1125,15 @@ void SortInterface()
 
 void NOwords(char* a)
 {
+	char nol[999] = { "0" };
+	char nolend[999] = { "0\n" };
+	//memset(nol, 0, 999);
 	do
 	{
+		if (!strcmp(a, nol)) return;
 		printf("\nВводить нужно только числа!\n");
 		fgets(a, 999, stdin);
+		if (!strcmp(a, nolend)) return;
 
 	} while (!atof(a));
 }
