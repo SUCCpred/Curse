@@ -37,7 +37,8 @@ const int MAXMENUSUREITEM = 3;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 struct node* beg, * back; //Указатели на начало и конец списка
-int NodesCount = 0; //Количество нод в списке
+int NodesCount = 0;//Количество нод в списке
+int width, height;
 enum ConsoleColor
 {
 	Black = 0,
@@ -166,16 +167,36 @@ void setPos(COORD& c)
 {
 	SetConsoleCursorPosition(hConsole, c);
 }
+void gotoxy(int xpos, int ypos)
+{
+	COORD scrn;
+	HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
+	scrn.X = xpos; scrn.Y = ypos;
+	SetConsoleCursorPosition(hOuput, scrn);
+}
 
 int main() {
-	COORD asd = { 0, 0 };
-	asd.X = 12;
-	asd.Y = 11;
+	COORD asd = { 12, 11 };
 	setPos(asd);
+
 	setlocale(LC_ALL, "Russian");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	setColor(Yellow, Red);
+	//HANDLE hCon;
+	// вытаскиваем ширину и высоту 
+	//hCon = GetStdHandle(-12);
+	//CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	/*if (GetConsoleScreenBufferInfo(hCon, &consoleInfo))
+	{
+		width = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
+		height = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
+	}*/
+		//gotoxy((width / 2) - 6, (height / 2) - 3);
+		//ShowWindow(GetConsoleWindow(), SW_MAXIMIZE); // полноэкранный режим
 	while (1)
 	{
+
 		switch (Menu())
 		{
 		case 1: LoadInterface();
@@ -574,13 +595,24 @@ void sEl(node* beg)
 void PrintMenu(int item, const char** itemshow, const int maxel)
 {
 	system("cls");
+	COORD asd = { 22, 8 };
+	setPos(asd);
+	//gotoxy((width / 2) - 6, (height / 2) - 3);
 	int i = 1;
 	cout << itemshow[0] << endl;
-	for (; i < item; i++)
+	for (; i < item; i++) {
+		asd.Y++;
+		setPos(asd);
 		cout << "      " << itemshow[i] << endl;
+	}
+	asd.Y++;
+	setPos(asd);
 	cout << "=====>" << itemshow[i++] << "<=====\n";
-	for (; i < maxel; i++)
+	for (; i < maxel; i++) {
+		asd.Y++;
+		setPos(asd);
 		cout << "      " << itemshow[i] << endl;
+	}
 };
 
 int Menu() {
@@ -1158,6 +1190,7 @@ void CreateElement()
 		printf("\nВведите номер автобазы:");
 		//while (!feof(stdin) && getchar() != '\n' );
 		fflush(stdin);
+		//cin.ignore(INT_MAX, '\n');
 			gets_s(a);
 			int m = atoi(a);
 			while (ab->next != 0)
