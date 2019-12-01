@@ -1185,10 +1185,7 @@ void CreateElement()
 		ab = beg;
 		struct node* temp = new node;
 
-		back->next = temp;
-		temp->prev = back;
-		temp->next = NULL;
-		back = temp;
+		
 
 		char a[999];
 		memset(a, 0, 999);
@@ -1205,7 +1202,7 @@ void CreateElement()
 					cout << "Автобаза под таким номером уже сужествует!\n";
 						system("pause");
 						CreateElement();
-						int n = -842150451;
+						/*int n = -842150451;
 						node* delete_temp = beg;
 						while (delete_temp != back)
 						{
@@ -1215,7 +1212,7 @@ void CreateElement()
 								break;
 							}
 							delete_temp = delete_temp->next;
-						}
+						}*/
 						return;
 				}
 				ab = ab->next;
@@ -1227,7 +1224,7 @@ void CreateElement()
 				printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
 				system("pause");
 				CreateElement();
-				int n = -842150451;
+				/*int n = -842150451;
 				node* delete_temp = beg;
 				while (delete_temp != back)
 				{
@@ -1237,7 +1234,7 @@ void CreateElement()
 						break;
 					}
 					delete_temp = delete_temp->next;
-				}
+				}*/
 				return;
 			}
 
@@ -1268,7 +1265,7 @@ void CreateElement()
 		
 		temp->info.CarCount = atoi(a);
 
-		int n = -842150451;
+		/*int n = -842150451;
 		node* delete_temp = beg;
 		while (delete_temp != back)
 		{
@@ -1278,13 +1275,16 @@ void CreateElement()
 				break;
 			}
 			delete_temp = delete_temp->next;
-		}
-
+		}*/
+		back->next = temp;
+		temp->prev = back;
+		temp->next = NULL;
+		back = temp;
 		NodesCount++;
 		system("pause");
 		return;
 	};
-
+	// Если элементов нет
 	beg = new node;
 	beg->prev = NULL;
 	back = beg;
