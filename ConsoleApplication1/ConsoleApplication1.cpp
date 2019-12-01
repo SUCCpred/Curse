@@ -277,7 +277,8 @@ void CorrectElement(struct node* temp)
 {
 	system("cls");
 	printf("Редактирование элемента:\n");
-
+	struct node* ab = new node;
+	ab = beg;
 	struct AutoBase* temp1 = new AutoBase;
 
 	printf("\nИзменить номер автобазы %d на: ", temp->info.ABnomber);
@@ -285,7 +286,31 @@ void CorrectElement(struct node* temp)
 	memset(a, 0, 999);
 	while (getchar() != '\n' && !feof(stdin));
 	gets_s(a);
-	temp->info.ABnomber = atoi(a);
+	int m = atoi(a);
+	while (ab->next != 0)
+	{
+		if (m == ab->info.ABnomber)
+		{
+			cout << "Автобаза под таким номером уже сужествует!\n";
+			system("pause");
+			CorrectElement(temp);
+			int n = -842150451;
+			node* delete_temp = beg;
+			while (delete_temp != back)
+			{
+				if (delete_temp->info.ABnomber == n)
+				{
+					DeleteElement(delete_temp);
+					break;
+				}
+				delete_temp = delete_temp->next;
+			}
+			return;
+		}
+		ab = ab->next;
+	}
+	if (ab->info.ABnomber != m)
+		temp->info.ABnomber = atoi(a);
 
 	printf("\nИзменить имя директора \"%s\" на: ", temp->info.Director);
 	gets_s(a);
@@ -483,13 +508,10 @@ void sEl(node* beg)
 	case 2:
 		system("cls");
 		cout << "Введите фамилию директора нужной автобазы:\n";
-		memset(d, 'Н', DirectorNameSize);
-		cin >> d;
-		//gets_s(d);
-		//scanf_s("%s", d);
+		gets_s(d);
 		while (beg->next != 0)
 		{
-			if (d == beg->info.Director)
+			if (!strcmp(d, beg->info.Director))
 			{
 				Print(*beg);
 				break;
@@ -833,7 +855,7 @@ void LoadInterface()
 void PrintTable(node* beg)
 {
 	char c;
-	int elonlist,
+	int elonmask,
 		pages,
 		lastpage,
 		k = 0;
@@ -845,16 +867,16 @@ void PrintTable(node* beg)
 		return;
 	}
 	//firstPage:
-	elonlist = 1;
+	elonmask = 1;
 	pages = 1;
 	node* temp = beg; //указатель temp устанавливаем в начало
 	system("cls");
-	printf("Escape - Выход ");
+	printf("Escape - Выход, ");
 	printf("Стрелки вверх, вниз - Навигация по листам\n");
 	printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 	printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
 
-	while (temp && elonlist != 6)
+	while (temp && elonmask != 6)
 	{
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 		printf("|           |                     |                           |                         |\n");
@@ -863,7 +885,7 @@ void PrintTable(node* beg)
 		printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 
 		temp = temp->next;
-		elonlist++;
+		elonmask++;
 	}
 	cout << "Страница 1";
 
@@ -878,21 +900,21 @@ void PrintTable(node* beg)
 				if (temp && temp->next != NULL)
 				{
 					temp = temp->prev;
-					elonlist--;
+					elonmask--;
 				}
-				while (k != elonlist + 4)
+				while (k != elonmask + 4)
 				{
 					temp = temp->prev;
 					k++;
 				}
 
 				system("cls");
-				printf("Escape - Выход ");
+				printf("Escape - Выход, ");
 				printf("Стрелки вверх, вниз - Навигация по листам\n");
 				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
-				elonlist = 1;
-				while (temp && elonlist != 6)
+				elonmask = 1;
+				while (temp && elonmask != 6)
 				{
 					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 					printf("|           |                     |                           |                         |\n");
@@ -901,7 +923,7 @@ void PrintTable(node* beg)
 					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 					if (temp->next == nullptr)break;
 					temp = temp->next;
-					elonlist++;
+					elonmask++;
 
 				}
 				cout << "Страница " << pages;
@@ -913,13 +935,13 @@ void PrintTable(node* beg)
 		{
 			if (temp && temp->next != NULL)
 			{
-				elonlist = 1;
+				elonmask = 1;
 				system("cls");
-				printf("Escape - Выход ");
+				printf("Escape - Выход, ");
 				printf("Стрелки вверх, вниз - Навигация по листам\n");
 				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
-				while (temp && elonlist != 6)
+				while (temp && elonmask != 6)
 				{
 					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 					printf("|           |                     |                           |                         |\n");
@@ -928,16 +950,16 @@ void PrintTable(node* beg)
 					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 					if (temp->next == nullptr)break;
 					temp = temp->next;
-					elonlist++;
+					elonmask++;
 				}
 				pages++;
 				lastpage = pages + 1;
 				cout << "Страница " << pages;
 			}
-			else if (elonlist == 6)
+			else if (elonmask == 6)
 			{
 					system("cls");
-					printf("Escape - Выход ");
+					printf("Escape - Выход, ");
 					printf("Стрелки вверх, вниз - Навигация по листам\n");
 					printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
 					printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
@@ -948,7 +970,7 @@ void PrintTable(node* beg)
 					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
 					cout << "Страница " << lastpage;
 					pages = lastpage;
-					elonlist = 1;
+					elonmask = 1;
 			}
 		}
 
@@ -1081,7 +1103,8 @@ int SortMenu()
 void SortInterface()
 {
 	system("cls");
-	cout << "Ключевым полем является Номер автобазы";
+	cout << "Ключевым полем является Номер автобазы\n";
+	system("pause");
 	while (1)
 	{
 		switch (SortMenu())
@@ -1100,6 +1123,16 @@ void SortInterface()
 }
 
 
+void NOwords(char* a)
+{
+	do
+	{
+		printf("\nВводить нужно только числа!\n");
+		fgets(a, 999, stdin);
+
+	} while (!atof(a));
+}
+
 void CreateElement()
 {
 	system("cls");
@@ -1109,7 +1142,6 @@ void CreateElement()
 		struct node* ab = new node;
 		ab = beg;
 		struct node* temp = new node;
-		//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 		back->next = temp;
 		temp->prev = back;
@@ -1119,8 +1151,8 @@ void CreateElement()
 		char a[999];
 		memset(a, 0, 999);
 		printf("\nВведите номер автобазы:");
-		while (getchar() != '\n' && !feof(stdin));
-
+		//while (!feof(stdin) && getchar() != '\n' );
+		fflush(stdin);
 			gets_s(a);
 			int m = atoi(a);
 			while (ab->next != 0)
@@ -1134,7 +1166,7 @@ void CreateElement()
 						node* delete_temp = beg;
 						while (delete_temp != back)
 						{
-							if (delete_temp->info.ABnomber == n)
+							if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
 							{
 								DeleteElement(delete_temp);
 								break;
@@ -1147,24 +1179,57 @@ void CreateElement()
 			}
 			if (ab->info.ABnomber != m)
 		temp->info.ABnomber = atoi(a);
+			if (temp->info.ABnomber == 0)
+			{
+				printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
+				system("pause");
+				CreateElement();
+				int n = -842150451;
+				node* delete_temp = beg;
+				while (delete_temp != back)
+				{
+					if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
+					{
+						DeleteElement(delete_temp);
+						break;
+					}
+					delete_temp = delete_temp->next;
+				}
+				return;
+			}
 
 		printf("\nВведите имя директора:");
 		gets_s(a);
-		strcpy_s(temp->info.Director, a);
+		fflush(stdin);
+		//fgets(a, 15, stdin);
+		//cin.ignore(INT_MAX, '\n');
+		//cout << strlen(a);
+		if (strlen(a) < 1)
+			strcpy_s(temp->info.Director, "vacancy");
+		else
+			strcpy_s(temp->info.Director, a);
+
+
 
 		printf("\nТоплива потрачено:");
 		gets_s(a);
+		if (!atoi(a))
+			NOwords(a);
+			
 		temp->info.FuelPOTRACHENO = atof(a);
 
 		printf("\nВведите количетсво автомобилей:");
 		gets_s(a);
+		if (!atoi(a))
+			NOwords(a);
+		
 		temp->info.CarCount = atoi(a);
 
 		int n = -842150451;
 		node* delete_temp = beg;
 		while (delete_temp != back)
 		{
-			if (delete_temp->info.ABnomber == n)
+			if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
 			{
 				DeleteElement(delete_temp);
 				break;
@@ -1181,8 +1246,9 @@ void CreateElement()
 	beg->prev = NULL;
 	back = beg;
 
+	struct node* ab = new node;
+	ab = beg;
 	struct node* temp = new node;
-	//temp->info = *(struct AutoBase*)malloc(sizeof(struct AutoBase));
 
 	back->next = temp;
 	temp->prev = back;
@@ -1190,32 +1256,71 @@ void CreateElement()
 	back = temp;
 	beg = back;
 
-	printf("\nВведите номер автобазы:");
 	char a[999];
 	memset(a, 0, 999);
-	while (getchar() != '\n' && !feof(stdin));
+
+	printf("\nВведите номер автобазы:");
+	//while (!feof(stdin) && getchar() != '\n');
+	fflush(stdin);
+
 	gets_s(a);
-	temp->info.ABnomber = atoi(a);
+	int m = atoi(a);
+	if (ab->info.ABnomber != m)
+		temp->info.ABnomber = atoi(a);
+	if (temp->info.ABnomber == 0)
+	{
+		printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
+		system("pause");
+		CreateElement();
+		int n = -842150451;
+		node* delete_temp = beg;
+		while (delete_temp != back)
+		{
+			if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
+			{
+				DeleteElement(delete_temp);
+				break;
+			}
+			delete_temp = delete_temp->next;
+		}
+		return;
+	}
 
 	printf("\nВведите имя директора:");
+	
+	
 	gets_s(a);
-	strcpy_s(temp->info.Director, a);
+	fflush(stdin);
+	//cin.ignore(INT_MAX, '\n');
+	//fgets(a, 15, stdin);
+	//cout << strlen(a);
+	if (strlen(a) < 1)
+		strcpy_s(temp->info.Director, "vacancy");
+	else
+		strcpy_s(temp->info.Director, a);
+
 
 	printf("\nТоплива потрачено:");
 	gets_s(a);
+	if (!atoi(a))
+		NOwords(a);
+
 	temp->info.FuelPOTRACHENO = atof(a);
 
 	printf("\nВведите количетсво автомобилей:");
 	gets_s(a);
+	if (!atoi(a))
+		NOwords(a);
+
 	temp->info.CarCount = atoi(a);
 
-	NodesCount++;
+	
 
 	int n = -842150451;
 	node* delete_temp = beg;
 	while (delete_temp != back)
 	{
-		if (delete_temp->info.ABnomber == n)
+		if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
 		{
 			DeleteElement(delete_temp);
 			break;
@@ -1223,7 +1328,7 @@ void CreateElement()
 		delete_temp = delete_temp->next;
 
 	}
-
+	NodesCount++;
 	system("pause");
 }
 
