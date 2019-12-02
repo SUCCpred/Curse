@@ -195,8 +195,8 @@ int main() {
 		width = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
 		height = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
 	}*/
-		//gotoxy((width / 2) - 6, (height / 2) - 3);
-		//ShowWindow(GetConsoleWindow(), SW_MAXIMIZE); // полноэкранный режим
+	//gotoxy((width / 2) - 6, (height / 2) - 3);
+	//ShowWindow(GetConsoleWindow(), SW_MAXIMIZE); // полноэкранный режим
 	while (1)
 	{
 
@@ -264,34 +264,34 @@ void DeleteInterface()
 		cin.get();
 		return;
 	}
+	system("cls");
+	printf("Автобаза %d будет удалена!\n", n);
+	printf("Вы уверены?");
+	char c;
+	int MenuItem = 1;
+	DrawAffirmationItems(MenuItem);
+	while (c = _getch()) //Получаем номер пукнта меню
+	{
+		if (c == EnterKeyCode) break;
+		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
+		else if (c == DownKeyCode && MenuItem < 2)	MenuItem++;
 		system("cls");
 		printf("Автобаза %d будет удалена!\n", n);
 		printf("Вы уверены?");
-		char c;
-		int MenuItem = 1;
 		DrawAffirmationItems(MenuItem);
-		while (c = _getch()) //Получаем номер пукнта меню
-		{
-			if (c == EnterKeyCode) break;
-			else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
-			else if (c == DownKeyCode && MenuItem < 2)	MenuItem++;
-			system("cls");
-			printf("Автобаза %d будет удалена!\n", n);
-			printf("Вы уверены?");
-			DrawAffirmationItems(MenuItem);
-		}
-		switch (MenuItem)
-		{
-		case 1:
-			return;
-			break;
-		case 2:
-			system("cls");
-			DeleteElement(temp);
-			printf("Автобаза %d удалена\n", n);
-			system("pause");
-			break;
-		}
+	}
+	switch (MenuItem)
+	{
+	case 1:
+		return;
+		break;
+	case 2:
+		system("cls");
+		DeleteElement(temp);
+		printf("Автобаза %d удалена\n", n);
+		system("pause");
+		break;
+	}
 	return;
 }
 
@@ -592,7 +592,7 @@ void sEl(node* beg)
 		break;
 		return;
 	}
-	
+
 }
 
 void PrintMenu(int item, const char** itemshow, const int maxel)
@@ -624,9 +624,9 @@ int Menu() {
 	char c;
 	while (c = _getch())
 	{
-		if (c == 83) {HolyPlus(); return -1;}
-		if (c == 115) {SovyetFlag(); return -1;}
-		if (c == 117) {SevSUCool(); return -1;}
+		if (c == 83) { HolyPlus(); return -1; }
+		if (c == 115) { SovyetFlag(); return -1; }
+		if (c == 117) { SevSUCool(); return -1; }
 		if (c == EnterKeyCode) return MenuItem;
 		else if (c == DownKeyCode && MenuItem < MAXMENUITEM - 1) MenuItem++;
 		else if (c == UpKeyCode && MenuItem > 1) MenuItem--;
@@ -742,6 +742,7 @@ void TextLoad() {
 
 	printf("Введите путь к импортируемому файлу с таблицей:\n");
 	cin >> ImportFileName;
+	cin.ignore(INT_MAX, '\n');
 
 	errno_t err;
 	FILE* in;
@@ -896,11 +897,11 @@ void PrintTable(node* beg)
 		pages,
 		lastpage,
 		k = 0;
-	if (!beg) 
+	if (!beg)
 	{
 		system("cls");  cout << "Данные отсутствуют..." << endl;
-		cout << "Сначала необходимо импортировать таблицу из файла или создать новую" << endl;  
-		system("pause");  
+		cout << "Сначала необходимо импортировать таблицу из файла или создать новую" << endl;
+		system("pause");
 		return;
 	}
 	//firstPage:
@@ -995,19 +996,19 @@ void PrintTable(node* beg)
 			}
 			else if (elonmask == 6)
 			{
-					system("cls");
-					printf("Escape - Выход, ");
-					printf("Стрелки вверх, вниз - Навигация по листам\n");
-					printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
-					printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
-					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
-					printf("|           |                     |                           |                         |\n");
-					printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
-					printf("|           |                     |                           |                         |\n");
-					printf("+-----------+---------------------+---------------------------+-------------------------+\n");
-					cout << "Страница " << lastpage;
-					pages = lastpage;
-					elonmask = 1;
+				system("cls");
+				printf("Escape - Выход, ");
+				printf("Стрелки вверх, вниз - Навигация по листам\n");
+				printf("                                     АВТОБАЗЫ СЕВАСТОПОЛЯ\n");
+				printf("№ АВТОБАЗЫ     ИМЯ ДИРЕКТОРА           ТОПЛИВА ПОТРАЧЕНО           КОЛИЧЕСТВО АВТОМОБИЛЕЙ\n");
+				printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+				printf("|           |                     |                           |                         |\n");
+				printf_s(FormatString, temp->info.ABnomber, temp->info.Director, temp->info.FuelPOTRACHENO, temp->info.CarCount);
+				printf("|           |                     |                           |                         |\n");
+				printf("+-----------+---------------------+---------------------------+-------------------------+\n");
+				cout << "Страница " << lastpage;
+				pages = lastpage;
+				elonmask = 1;
 			}
 		}
 
@@ -1065,7 +1066,7 @@ void SortListUP()
 	}
 	system("cls");
 	cout << "Таблица успешно отсортирована по возрастанию\n";
-		system("pause");
+	system("pause");
 	return;
 }
 
@@ -1185,7 +1186,7 @@ void CreateElement()
 		ab = beg;
 		struct node* temp = new node;
 
-		
+
 
 		char a[999];
 		memset(a, 0, 999);
@@ -1193,35 +1194,13 @@ void CreateElement()
 		//while (!feof(stdin) && getchar() != '\n' );
 		fflush(stdin);
 		//cin.ignore(INT_MAX, '\n');
-			gets_s(a);
-			int m = atoi(a);
-			while (ab->next != 0)
+		gets_s(a);
+		int m = atoi(a);
+		while (ab->next != 0)
+		{
+			if (m == ab->info.ABnomber)
 			{
-				if (m == ab->info.ABnomber)
-				{
-					cout << "Автобаза под таким номером уже сужествует!\n";
-						system("pause");
-						CreateElement();
-						/*int n = -842150451;
-						node* delete_temp = beg;
-						while (delete_temp != back)
-						{
-							if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
-							{
-								DeleteElement(delete_temp);
-								break;
-							}
-							delete_temp = delete_temp->next;
-						}*/
-						return;
-				}
-				ab = ab->next;
-			}
-			if (ab->info.ABnomber != m)
-		temp->info.ABnomber = atoi(a);
-			if (temp->info.ABnomber == 0)
-			{
-				printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
+				cout << "Автобаза под таким номером уже сужествует!\n";
 				system("pause");
 				CreateElement();
 				/*int n = -842150451;
@@ -1237,6 +1216,28 @@ void CreateElement()
 				}*/
 				return;
 			}
+			ab = ab->next;
+		}
+		if (ab->info.ABnomber != m)
+			temp->info.ABnomber = atoi(a);
+		if (temp->info.ABnomber == 0)
+		{
+			printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
+			system("pause");
+			CreateElement();
+			/*int n = -842150451;
+			node* delete_temp = beg;
+			while (delete_temp != back)
+			{
+				if (delete_temp->info.ABnomber == n || delete_temp->info.CarCount == n)
+				{
+					DeleteElement(delete_temp);
+					break;
+				}
+				delete_temp = delete_temp->next;
+			}*/
+			return;
+		}
 
 		printf("\nВведите имя директора:");
 		gets_s(a);
@@ -1255,14 +1256,14 @@ void CreateElement()
 		gets_s(a);
 		if (!atoi(a))
 			NOwords(a);
-			
+
 		temp->info.FuelPOTRACHENO = atof(a);
 
 		printf("\nВведите количетсво автомобилей:");
 		gets_s(a);
 		if (!atoi(a))
 			NOwords(a);
-		
+
 		temp->info.CarCount = atoi(a);
 
 		/*int n = -842150451;
@@ -1293,11 +1294,7 @@ void CreateElement()
 	ab = beg;
 	struct node* temp = new node;
 
-	back->next = temp;
-	temp->prev = back;
-	temp->next = NULL;
-	back = temp;
-	beg = back;
+
 
 	char a[999];
 	memset(a, 0, 999);
@@ -1315,7 +1312,7 @@ void CreateElement()
 		printf("\nНомер автобазы может быть только целочисленным и натуральным!\n");
 		system("pause");
 		CreateElement();
-		int n = -842150451;
+		/*int n = -842150451;
 		node* delete_temp = beg;
 		while (delete_temp != back)
 		{
@@ -1325,13 +1322,13 @@ void CreateElement()
 				break;
 			}
 			delete_temp = delete_temp->next;
-		}
+		}*/
 		return;
 	}
 
 	printf("\nВведите имя директора:");
-	
-	
+
+
 	gets_s(a);
 	fflush(stdin);
 	//cin.ignore(INT_MAX, '\n');
@@ -1357,9 +1354,9 @@ void CreateElement()
 
 	temp->info.CarCount = atoi(a);
 
-	
 
-	int n = -842150451;
+
+	/*int n = -842150451;
 	node* delete_temp = beg;
 	while (delete_temp != back)
 	{
@@ -1370,7 +1367,12 @@ void CreateElement()
 		}
 		delete_temp = delete_temp->next;
 
-	}
+	}*/
+	back->next = temp;
+	temp->prev = back;
+	temp->next = NULL;
+	back = temp;
+	beg = back;
 	NodesCount++;
 	system("pause");
 }
@@ -1525,7 +1527,7 @@ void HolyPlus()
 							"````````````````````1110110110110111`1````````````````` ",
 							"``````````````````````````111`````````````````````````` " };
 	for (int i = 0; i < 34; i++)
-	printf("%s\n",HOSPADI[i]);
+		printf("%s\n", HOSPADI[i]);
 	PlaySound(TEXT("D:\\RIAnthem.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	c = getchar();
 }
@@ -1535,7 +1537,7 @@ void SovyetFlag()
 	char c;
 	setColor(Yellow, Red);
 	system("cls");
-	const char* HOSPADI[] = {	"000000000000000000000__00000000000000000000000000000000000",
+	const char* HOSPADI[] = { "000000000000000000000__00000000000000000000000000000000000",
 								"0000000000000000000000___000000000000000000000000000000000",
 								"0000000000000000000000000_____0000000000000000000000000000",
 								"00000000000000000000000000000_____000000000000000000000000",
@@ -1575,7 +1577,7 @@ void SevSUCool()
 	char c;
 	setColor(White, Blue);
 	system("cls");
-	const char* HOSPADI[] = {   "##########################",
+	const char* HOSPADI[] = { "##########################",
 								"########==========########",
 								"#####================#####",
 								"###====================###",
